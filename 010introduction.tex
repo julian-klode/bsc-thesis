@@ -1,0 +1,36 @@
+\chapter{Introduction}
+
+Many\footnote{Such as Haskell, Java, Scala, C++} programming languages these days support a form of parametric polymorphism.
+Parametric Polymorphism allows the definition of data types that abstract over
+the type of some element they store, such as lists that can store elements of
+some unspecified type \lstinline{a}:
+\begin{lstlisting}[language=scala]
+sealed abstract class List[a]
+case class Nil[a]() extends List[a]
+case class Cons[a](car: a, cdr: List[a]) extends List[a]
+\end{lstlisting}
+In Scala and other object-oriented (or influenced) languages this concept is
+called generics.
+Datatype-generic programming is a different concept. Instead of abstracting
+over the type of the elements, it abstracts over the container type.
+
+For example, consider we have types to represent arrays and lists. Consider that
+those store integers. We want to increase every integer by one. That is, we want
+to write a function that takes a container of integers and increases every integer
+by one.\todo{Add an example}
+
+Datatype-generic programming does not only abstract containers. In Haskell and
+other functional programming languages, data types (except some built-in scalar
+types like integers and floating point numbers) are represented using
+algebraic data types, that is (labelled) sum types and product types.
+In Scala, case classes with a sealed abstract base class (or trait) can
+represent algebraic data types.\cite{scalagp}
+But Scala also allows unsealed classes, so further cases can be added even in
+different modules.
+
+
+\section{Existing Haskell Modules}
+\subsection{\texttt{Data.Generics}}
+\subsection{\texttt{Unbound}}
+
+\cite{DBLP:conf/tldi/LammelJ03}

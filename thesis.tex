@@ -1,0 +1,68 @@
+\documentclass[abstracton,parskip=half]{scrreprt}
+\usepackage[english,ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{todonotes}
+\usepackage{listings}
+\usepackage{url}
+
+\lstdefinelanguage{scala}{
+  morekeywords={%
+          abstract,case,catch,class,def,do,else,extends,%
+          false,final,finally,for,forSome,if,implicit,import,lazy,%
+          match,new,null,object,override,package,private,protected,%
+          return,sealed,super,this,throw,trait,true,try,type,%
+          val,var,while,with,yield},
+  otherkeywords={=>,<-,<\%,<:,>:,\#,@},
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[n]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+  morestring=[b]"""
+}[keywords,comments,strings]
+
+
+
+\hypersetup{
+   hidelinks=true,
+   pdfauthor={Julian Andres Klode},
+   pdftitle={Bachelor Thesis: Performance and Interfaces of Datatype-Generic Scala Programs},
+   pdfsubject={Programming Languages},
+}
+
+\author{Julian Andres Klode\\Matriculation number: 2403668\\\\Supervisor: Yufei Cai}
+% Let's abuse the subject field for now
+\subject{\includegraphics[height=.13\textheight]{graphics/Logo_uni}\\Programming Languages and Software Technology Group\\Prof. Ostermann\\[1.5cm]}
+\title{Performance and Interfaces of Datatype-Generic Scala Programs}
+\subtitle{Bachelor Thesis}
+\date{}
+
+
+\begin{document}
+    \pagenumbering{roman}
+    \maketitle{}
+    \input{abstract}
+    \selectlanguage{english}
+
+    \tableofcontents{}
+    \clearpage
+    \pagenumbering{arabic}
+    \setcounter{page}{1}
+
+    \input{010introduction}
+
+    \chapter{Implementing Datatype-Generic Programming in Scala}
+    \section{Name-binding Operations}
+    \section{Derived Data Types}
+    \section{GPBench}
+    GPBench is a suite of benchmarks for comparing generic programming
+    libraries in Haskell \cite{DBLP:conf/haskell/RodriguezJJGKO08}.
+
+    \chapter{Conclusion}
+
+    \bibliographystyle{alpha}
+    \bibliography{thesis}
+\end{document}
