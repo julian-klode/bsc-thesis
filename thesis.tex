@@ -386,6 +386,23 @@
     Comparing our ports of other libraries against shapeless helps us determine
     whether the solutions are efficient.
 
+    I found Shapeless to be buggy. Defining a generic function and calling
+    it twice in the interpreter resulted in errors:
+    \begin{lstlisting}[language=Scala,gobble=6]
+      scala> def inc(i: Int) = i + 1
+      inc: (i: Int)Int
+
+      scala> everywhere(inc _)(List(1,2,3))
+      res7: List[Int] = List(2, 3, 4)
+
+      scala> everywhere(inc _)(List(1,2,3))
+      java.lang.AbstractMethodError: fresh$macro$6$2$.caseUniv()Lshapeless/PolyDefns$Case;
+        ... 43 elided
+    \end{lstlisting}
+
+    Furthermore, testing it with a standard paradise benchmark, increasing all
+    salaries by 10\% failed as well sometimes, with shapeless only increasing
+    some of the values when run under scalatest.
 
     \chapter{Implementing Datatype-Generic Programming in Scala}
     \section{Name-binding Operations}
