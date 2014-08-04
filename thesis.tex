@@ -7,9 +7,13 @@
 \usepackage{todonotes}
 \usepackage{listings}
 \usepackage{url}
+\usepackage{amssymb}
+
+
+
 
 \lstdefinelanguage{scala}{
-  morekeywords={%
+  keywords={%
           abstract,case,catch,class,def,do,else,extends,%
           false,final,finally,for,forSome,if,implicit,import,lazy,%
           match,new,null,object,override,package,private,protected,%
@@ -25,6 +29,17 @@
 }[keywords,comments,strings]
 
 
+\lstset{
+      basicstyle=\small,%
+      frame=tb,
+      basewidth={0.5em,0.45em},
+      literate={=}{{$=$}}1
+               {>}{{$>$}}1 {<}{{$<$}}1 {\\}{{$\lambda$}}1
+               {\\\\}{{\char`\\\char`\\}}1
+               {->}{{$\rightarrow$}}2 {>=}{{$\geq$}}2 {←}{{$\leftarrow$}}2
+               {<=}{{$\leq$}}2 {⇒}{{$\Rightarrow$}}2
+               {|}{{$\mid$}}1
+}
 
 \hypersetup{
    hidelinks=true,
@@ -38,6 +53,8 @@
 \subject{\includegraphics[height=.13\textheight]{graphics/Logo_uni}\\Programming Languages and Software Technology Group\\Prof. Ostermann\\[1.5cm]}
 \title{Performance and Interfaces of Datatype-Generic Scala Programs}
 \subtitle{Bachelor Thesis}
+\newcommand{\cd}{\texttt}
+\newcommand{\ex}{\paragraph{Example:}}
 \date{}
 
 
@@ -54,6 +71,302 @@
 
     \input{010introduction}
 
+
+    \chapter{Porting from Haskell to Scala}
+
+    This chapter introduces some basic concepts for translating Haskell code
+    to Scala. These concepts were explained by Oliveira and Gibbons~\cite{scalagp}, this
+    chapter summarizes them.
+
+    \section{Type classes and Instances}
+
+    Haskell as a concept of type classes and instances, whereas Scala offers
+    traits. Traits differ from type classes in that their methods always contain
+    an implicit \cd{this} object, that is, they combine data and functions;
+    whereas type classes do not reference any data.
+
+    Given a type class like
+    \begin{lstlisting}[language=Haskell,gobble=6]
+      class MyEq a where
+        myEquals :: a -> a -> Boolean
+        myEquals a b = False
+    \end{lstlisting}
+    how do we translate this to Scala? There are two approaches:
+
+    \subsection{Object-oriented translation}
+    The object-oriented approach uses traits just like interfaces in
+    Java are used. For example, the \cd{MyEq} type class would be translated
+    to the following trait:
+    \begin{lstlisting}[language=Scala,gobble=6]
+      trait MyEq[T] {
+        def myEquals(b: T) : Boolean = false
+      }
+    \end{lstlisting}
+    In order to implement this trait for a class the class must extend the
+    trait and override the methods of the trait:
+    \begin{lstlisting}[language=Scala,gobble=6]
+      class MyInt(val i: Int) extends MyEq[MyInt] {
+        override def myEquals(b: MyInt) : Boolean = i == b.i
+      }
+    \end{lstlisting}
+    This already shows one deficiency of the traits approach: We cannot
+    implement a trait for a type without modifying that type itself.
+
+    Writing a function using this approach is straight forward:
+    \begin{lstlisting}[language=Scala,gobble=6]
+      def myEquals[T <: MyEq[T]](a: T, b: T) = a.myEquals(b)
+    \end{lstlisting}
+
+    This style makes it easy to specify contexts, so for example, if we have
+    a class \cd{MyOrd} for ordering that also requires equality, we can write
+    \begin{lstlisting}[language=Scala,gobble=6]
+      trait MyOrd[T] extends MyEq[T] {
+        def myLessOrEqual(b: T) : Boolean
+      }
+    \end{lstlisting}
+
+    If we want to translate a type class containing a method that does not take a
+    parameter of the type A, this style of writing becomes inconsistent.
+
+    \ex Consider the type class
+    \begin{lstlisting}[language=Haskell,gobble=6]
+      class PerformerFactory a where
+        factor :: a
+        perform :: a -> Boolean
+    \end{lstlisting}
+    We can only directly translate the \cd{perform} method to Scala. The \cd{factor}
+    method can only be translated by use of a generic function -- this will
+    require a stub implementation, that instances can specialize.
+    \begin{lstlisting}[language=Scala,gobble=6]
+      trait PerformerFactory[A] {
+        def factor : A
+      }
+      def perform[A](a: A) : Boolean = throw new Exception
+    \end{lstlisting}
+    The end result is inconsistent, because one method is now a method of
+    instance objects whereas the other is translated to a global function. It
+    also permits instances of the trait that only implement the \cd{factor}
+    method.
+    \subsection{The functional approach}
+    Remember the type class MyEq:
+    \begin{lstlisting}[language=Haskell,gobble=6]
+      class MyEq a where
+        myEquals :: a -> a -> Boolean
+        myEquals a b = False
+    \end{lstlisting}
+    We can ignore the implicit this parameter in traits and translate the type
+    class as:
+    \begin{lstlisting}[language=Scala,gobble=6]
+      trait MyEq[A] {
+        def myEquals(a: A, b: A) = false
+      }
+      def myEquals[T](a: T, b: T)(implicit eq: MyEq[T]) = eq.myEquals(a, b)
+    \end{lstlisting}
+    We also provided a global \cd{myEquals} function to make our life easier.
+
+    Now in order to implement the trait for a type, we need to define an instance
+    of the trait for this type. Instances of those traits correspond to dictionaries
+    in Haskell, and can be implemented like this:
+    \begin{lstlisting}[language=Scala,gobble=6]
+      implicit def MyEqInt = new MyEq[Int] {
+        override def myEquals(a: Int, b: Int) = a == b
+      }
+    \end{lstlisting}
+    The \cd{implicit} keyword is a special syntactic sugar provided by Scala
+    that makes our work easier. Without it, if we wanted to compare two objects,
+    we would need to manually pass the instance of the trait to the function,
+    like this:
+    \begin{lstlisting}[language=Scala,gobble=6]
+      > myEquals(1, 1)(MyEq)
+      true
+    \end{lstlisting}
+    By making \cd{MyEqInt} and the \cd{eq} parameter of \cd{myEquals} implicit,
+    the Scala compiler can automatically figure out that \cd{MyEqInt} is the
+    correct argument for the \cd{eq} parameter, and we can now run:
+    \begin{lstlisting}[language=Scala,gobble=6]
+      > myEquals(1, 1)
+      true
+    \end{lstlisting}
+
+
+    We can also implement instance that require some sort of context. For
+    example, if we want to implement \cd{MyEq} for tuples of objects implementing
+    \cd{MyEq} as well, we can write:
+    \begin{lstlisting}[language=Scala,gobble=6]
+      implicit def myEqTuple[A,B](implicit ea: MyEq[A], eb: MyEq[B]) =
+        new MyEq[(A,B)]{
+        override def myEquals(a: (A,B), b: (A,B)) = ea.myEquals(a._1, b._1)
+                                        && eb.myEquals(a._2, b._2)
+      }
+    \end{lstlisting}
+    Now we can compare tuples: For example, in the following example, Scala will
+    automatically infer the correct instance of \cd{MyEq[(Int, Int)]}:
+    \begin{lstlisting}[language=Scala,gobble=6]
+      > myEquals((1,2), (1,2))
+      true
+    \end{lstlisting}
+    We can still pass  it manually though
+    \begin{lstlisting}[language=Scala,gobble=6]
+      > myEquals((1,2), (1,2))(myEqTuple(MyEqInt, MyEqInt))
+      true
+    \end{lstlisting}
+
+    \section{Making the most of type inference}
+
+    Compared to Haskell, Scala's type inference is weaker. For example, when
+    defining a function, the type of parameters need to be defined. An exception
+    to this are anonymous functions. If the Scala compiler knows which type the
+    function must have, it can automatically infer the type of an anonymous
+    function. Thus, in order to avoid repetitious type information in the code,
+    we can change our \cd{MyEq} example to:
+    \begin{lstlisting}[language=Scala,gobble=6]
+      trait MyEq[A] {
+        def myEquals : (A => A => Boolean) = a => b => false
+      }
+      implicit def MyEqInt = new MyEq[Int] {
+        override def myEquals = a => b => a == b
+      }
+    \end{lstlisting}
+    Type annotations are not required in method implementations anymore. This
+    technique is shown in the port of the EMGM library.
+
+    \chapter{Libraries}
+
+    \section{LIGD -- Translation of LIGD}
+    \lstinputlisting[language=scala,firstline=55,lastline=70,float=ht,caption=LIGD Basics,label=ligd-base]{scala/ligd.scala}
+
+    LIGD is a simple library that provides a \cd{Rep} trait that describes
+    the structure of a type using sums, products, and scalar values.
+
+    Listing~\ref{ligd-base} shows the basic \cd{Rep} trait with instances for
+    scalar types, sums (represented using \cd{Either}), and products (represented
+    using \cd{Tuple2}). As explained in the previous chapter, we use implicit
+    here to allow the compiler to automatically infer the correct \cd{Rep}
+    instance for generic function calls.
+
+
+
+    \subsection{User-defined types}
+    In order to work with user-defined (case) classes, those need to be
+    translated to a representation using sums and products. We need an
+    isomorphism between the user-defined class and a sum of product type. First
+    of all, we can define an isomorphismus as:
+    \begin{lstlisting}[language=scala,gobble=6]
+      class EP[B, C](val from: B ⇒ C, val to: C ⇒ B)
+    \end{lstlisting}
+    Now we can define a \cd{Rep} instance, that represents values of a custom
+    type \cd{B} and converts it to a sum of product notation of type \cd{C},
+    something like this:
+    \begin{lstlisting}[language=scala,gobble=6]
+      case class RType[C, B](val c: Rep[C], val ep: EP[B, C]) extends Rep[B]
+    \end{lstlisting}
+    There is one problem though: The representation of \cd{C} may be recursive,
+    for example a list type is a sum of nothing, and a product of an element and
+    the list type. Thus, the parameter \cd{c} must be lazy. Scala does not allow
+    lazy \cd{val}s on case classes, though, so this needs to be worked around.
+
+    There are two approaches: One is encoding the thunk manually, like:
+    \begin{lstlisting}[language=scala,gobble=6]
+      case class RType[C, B](val c: () => Rep[C], val ep: EP[B, C]) extends Rep[B]
+    \end{lstlisting}
+    This is very easy, but looks inconsistent in usage. Another approach is to
+    not use a case class and provide a companion object with custom \cd{apply}
+    and \cd{unapply} methods. Listing~\ref{ligd-rtype} shows how this is
+    implemented.
+    \lstinputlisting[language=scala,firstline=78,lastline=97,float=ht,caption=Implementation of RType,label=ligd-rtype]{scala/ligd.scala}
+
+    \textbf{Example (Lists):} In order to represent a list, we encode the
+    list as a sum of products, or to be precise, we want to encode a \cd{List[A]}
+    as: \cd{Either[Unit, (A, List[A])]}. In order to do this, we need functions
+    that convert from \cd{List[A]} to \cd{Either[Unit, (A, List[A])]} and
+    vice versa. An implementation of those functions is given in figure~\ref{ligd-rlist}.
+    %-- We can then define an RType instance as:
+    %\lstinputlisting[language=scala,firstline=109,lastline=113]{scala/ligd.scala}
+
+    \lstinputlisting[language=scala,firstline=103,lastline=124,float=ht,caption=Implementation of rList,label=ligd-rlist]{scala/ligd.scala}
+
+    Note how the first parameter of \cd{RType} is recursive.
+
+    \subsection{Writing generic functions}
+    Writing generic functions using LIGD is simple. We just pass the object(s)
+    we are interested in to the function, along with their type representations,
+    and then pattern match on the type representations.
+
+      \lstinputlisting[language=scala,firstline=37,lastline=52,float=ht,caption=Generic Equality in LIGD,label=ligd-geq]{scala/ligd.scala}
+
+    This function is pretty much self-explaining.
+
+    \subsection{Differences to the Haskell implementation}
+    One minor difference is that we implemented \cd{Rep} like we would implement
+    a type class in Haskell. The original paper manually passed around \cd{Rep}
+    instances for generic functions, we make use of Scala's implicit values.
+
+
+    \subsubsection{Ad-hoc cases using subtyping}
+    A key difference that extends the functionality of LIGD in Scala is that
+    Scala permits sub-typing. If we look at our definition of RType, we see
+    that it is not \cd{sealed}, allowing it to be extended by subclasses.
+
+    We can use this to create custom sub classes for types we are interested
+    in, and pattern match on them. Because those are sub classes of \cd{RType},
+    existing code will be unaffected by new types.
+
+    An example for this is the list type. Because we extended \cd{RType} as
+    \cd{RList} we can now write a generic function that finds all lists of a
+    specific element type in a data structure.
+
+    \subsubsection{Equality comparisons of type representations}
+    The Haskell version of LIGD does not support comparing Rep instances
+    against each other. This is quite useful, though, as it allows to
+    implement simple variants of generic operations that look for objects
+    of a specific type in another object.
+
+
+    When representing generic types such as Lists, we can create a subclass
+    of RType with parameters representing the generic arguments. We can then
+    define a custom \cd{equals()} method, as seen in listing~\ref{rmycustomtype}.
+
+    \begin{lstlisting}[language=Scala,gobble=8,float,caption=Representing custom generic types,label=rmycustomtype]
+        class RMyCustomType[T1, ...](r1: Rep[T1], ...) {
+            override def equals(b: Any) : Boolean = b match {
+                case RMyCustomType(r1, ...) => r1 == this.r1 &&
+                                               r2 == this.r2 && ...
+                case _ => false
+            }
+        }
+    \end{lstlisting}
+
+
+
+    \section{EMGM -- Translation of Extensible and Modular Generics for the Masses}
+
+    \section{Uniplate}
+    Uniplate is a library that differentiates between two basic type of
+    objects: Uniplates and Biplates. Uniplates are simple recursive types
+    like terms or expressions, which form a graph where all inner nodes have
+    the same common supertype. Biplates are types that contain other Uniplates,
+    for example, a \cd{List a} has a \cd{Biplate List a}.
+
+
+    Uniplate can theoretically be ported from Haskell to Scala, but it is not
+    feasible to do without a way to automatically generate instances of the
+    \cd{Biplate} type class, because the amount of biplates needed is quadratic
+    to the number of types.
+
+    A basic implementation of uniplate can be found in the \cd{uniplate.scala}
+    source file in section~\ref{src:uniplate}.
+
+
+    \section{Shapeless -- Scala Implementation of Scrap your Boilerplate}
+
+    Shapeless is an adaption of Scrap your Boilerplate\cite{DBLP:conf/tldi/LammelJ03}
+    from Haskell to Scala. Compared to the Haskell implementation, the Scala
+    implementation simplifies some things a bit.
+
+    Comparing our ports of other libraries against shapeless helps us determine
+    whether the solutions are efficient.
+
+
     \chapter{Implementing Datatype-Generic Programming in Scala}
     \section{Name-binding Operations}
     \section{Derived Data Types}
@@ -61,8 +374,53 @@
     GPBench is a suite of benchmarks for comparing generic programming
     libraries in Haskell \cite{DBLP:conf/haskell/RodriguezJJGKO08}.
 
+    \section{Benchmarks}
+
+    To test the performance of the libraries, we ran various tests with them. For
+    each test, we executed it 600 thousand times, and calculated the average
+    time of the last 300 thousand executions.
+
+    \begin{table}[ht]
+    \input{bench}
+    \caption{Benchmark results}
+    \label{bench}
+    \end{table}
+
+    As we can see in in table~\ref{bench}, all tested libraries perform roughly
+    the same time-wise.
+
+
     \chapter{Conclusion}
+
+    \begin{table}[t!]
+      \begin{tabular}{c|cccc}
+        Feature (and test)    & LIGD & EMGM & Uniplate & Shapeless \\
+                     \hline
+        Ad-hoc cases (company) & \checkmark & \checkmark & \checkmark & \checkmark \\
+        Multi-parameter functions (geq) & \checkmark & \checkmark & ($\times$) & \checkmark
+      \end{tabular}
+
+      \caption{Feature overview}
+    \end{table}
 
     \bibliographystyle{alpha}
     \bibliography{thesis}
+
+    \appendix{}
+    \chapter{Source Code}
+
+    \lstset{frame=none}
+    \section{LIGD}
+    \lstinputlisting[language=scala,firstline=19,label=src:ligd,showstringspaces=false]{scala/ligd.scala}
+    \section{EMGM}
+    \lstinputlisting[language=scala,firstline=19,label=src:emgm,showstringspaces=false]{scala/emgm.scala}
+    \section{Uniplate}
+    \lstinputlisting[language=scala,firstline=19,label=src:uniplate,showstringspaces=false]{scala/uniplate.scala}
+    \section{Test Data}
+    \lstinputlisting[language=scala,firstline=19,label=src:data,showstringspaces=false]{scala/data.scala}
+    \section{Company tests}
+    \lstinputlisting[language=scala,firstline=19,label=src:companytest,showstringspaces=false]{scala/CompanyTest.scala}
+
+    \section{Benchmark}
+    \lstinputlisting[language=scala,firstline=19,label=src:test-,showstringspaces=false]{scala/test.scala}
 \end{document}
