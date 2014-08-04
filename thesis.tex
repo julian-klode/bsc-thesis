@@ -76,7 +76,7 @@
     \chapter{Porting from Haskell to Scala}
 
     This chapter introduces some basic concepts for translating Haskell code
-    to Scala. These concepts were explained by Oliveira and Gibbons~\cite{scalagp}, this
+    to Scala. Most of these concepts were explained by Oliveira and Gibbons~\cite{scalagp}, this
     chapter summarizes them.
 
     \section{Type classes and Instances}
@@ -230,6 +230,25 @@
     \end{lstlisting}
     Type annotations are not required in method implementations anymore. This
     technique is shown in the port of the EMGM library.
+
+    % Discovered: 2014-08-04
+    Another thing that seems to matter a lot is the order of parameters. If
+    the less complex types are left of the more complex types, the more
+    complex types can be inferred more easily. For example, in Haskell,
+    \cd{foldl} has the signature:
+    \begin{lstlisting}[language=Haskell,gobble=6]
+      foldl :: (a -> b -> a) -> a -> [b] -> a
+    \end{lstlisting}
+    Scala does not seem to be able to understand this, it will fail to
+    infer the type of the first argument. Moving the first argument to
+    the end fixes the issue, as Scala can then simply infer from left
+    to right. It basically looks like this in Scala (if you ignore that
+    the first argument is actually the object which foldLeft is a method
+    of):
+    \begin{lstlisting}[language=Scala,gobble=6]
+      foldLeft[a,b] : [b] => a => (a => b => a) => a
+    \end{lstlisting}
+
 
     \chapter{Libraries}
 
