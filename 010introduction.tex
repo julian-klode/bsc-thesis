@@ -17,7 +17,12 @@ over the type of the elements, it abstracts over the container type.
 For example, consider we have types to represent arrays and lists. Consider that
 those store integers. We want to increase every integer by one. That is, we want
 to write a function that takes a container of integers and increases every integer
-by one.\todo{Add an example}
+by one. That is, we want to write something like:
+
+\begin{lstlisting}[language=Scala]
+def incInt[C[_]](c: C[Int]) = everywhere((i: Int) => i + 1)(c)
+\end{lstlisting}
+(Note: This does not actually work with shapeless)
 
 Datatype-generic programming does not only abstract containers. In Haskell and
 other functional programming languages, data types (except some built-in scalar
