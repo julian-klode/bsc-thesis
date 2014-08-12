@@ -253,7 +253,7 @@
     \chapter{Libraries}
 
     \section{LIGD -- Translation of LIGD}
-    \lstinputlisting[language=scala,firstline=55,lastline=70,float=ht,caption=LIGD Basics,label=ligd-base]{scala/ligd.scala}
+    \lstinputlisting[language=scala,firstline=55,lastline=70,float=ht,caption=LIGD Basics,label=ligd-base]{scala/src/ligd.scala}
 
     LIGD is a simple library that provides a \cd{Rep} trait that describes
     the structure of a type using sums, products, and scalar values.
@@ -293,7 +293,7 @@
     not use a case class and provide a companion object with custom \cd{apply}
     and \cd{unapply} methods. Listing~\ref{ligd-rtype} shows how this is
     implemented.
-    \lstinputlisting[language=scala,firstline=78,lastline=97,float=ht,caption=Implementation of RType,label=ligd-rtype]{scala/ligd.scala}
+    \lstinputlisting[language=scala,firstline=78,lastline=97,float=ht,caption=Implementation of RType,label=ligd-rtype]{scala/src/ligd.scala}
 
     \textbf{Example (Lists):} In order to represent a list, we encode the
     list as a sum of products, or to be precise, we want to encode a \cd{List[A]}
@@ -301,9 +301,9 @@
     that convert from \cd{List[A]} to \cd{Either[Unit, (A, List[A])]} and
     vice versa. An implementation of those functions is given in figure~\ref{ligd-rlist}.
     %-- We can then define an RType instance as:
-    %\lstinputlisting[language=scala,firstline=109,lastline=113]{scala/ligd.scala}
+    %\lstinputlisting[language=scala,firstline=109,lastline=113]{scala/src/ligd.scala}
 
-    \lstinputlisting[language=scala,firstline=103,lastline=124,float=ht,caption=Implementation of rList,label=ligd-rlist]{scala/ligd.scala}
+    \lstinputlisting[language=scala,firstline=103,lastline=124,float=ht,caption=Implementation of rList,label=ligd-rlist]{scala/src/ligd.scala}
 
     Note how the first parameter of \cd{RType} is recursive.
 
@@ -312,7 +312,7 @@
     we are interested in to the function, along with their type representations,
     and then pattern match on the type representations.
 
-      \lstinputlisting[language=scala,firstline=37,lastline=52,float=ht,caption=Generic Equality in LIGD,label=ligd-geq]{scala/ligd.scala}
+      \lstinputlisting[language=scala,firstline=37,lastline=52,float=ht,caption=Generic Equality in LIGD,label=ligd-geq]{scala/src/ligd.scala}
 
     This function is pretty much self-explaining.
 
@@ -448,16 +448,27 @@
 
     \lstset{frame=none}
     \section{LIGD}
-    \lstinputlisting[language=scala,firstline=19,label=src:ligd,showstringspaces=false]{scala/ligd.scala}
+    \lstinputlisting[language=scala,firstline=19,label=src:ligd,showstringspaces=false]{scala/src/ligd.scala}
+    \subsection{Company data}
+    \lstinputlisting[language=scala,firstline=19,label=src:ligd-company,showstringspaces=false]{scala/src/ligd-company.scala}
     \section{EMGM}
-    \lstinputlisting[language=scala,firstline=19,label=src:emgm,showstringspaces=false]{scala/emgm.scala}
+    \lstinputlisting[language=scala,firstline=19,label=src:emgm,showstringspaces=false]{scala/src/emgm.scala}
+    \subsection{Company data}
+    \lstinputlisting[language=scala,firstline=19,label=src:emgm-company,showstringspaces=false]{scala/src/emgm-company.scala}
     \section{Uniplate}
-    \lstinputlisting[language=scala,firstline=19,label=src:uniplate,showstringspaces=false]{scala/uniplate.scala}
+    \lstinputlisting[language=scala,firstline=19,label=src:uniplate,showstringspaces=false]{scala/src/uniplate.scala}
     \section{Test Data}
-    \lstinputlisting[language=scala,firstline=19,label=src:data,showstringspaces=false]{scala/data.scala}
-    \section{Company tests}
-    \lstinputlisting[language=scala,firstline=19,label=src:companytest,showstringspaces=false]{scala/CompanyTest.scala}
+    \lstinputlisting[language=scala,firstline=19,label=src:data,showstringspaces=false]{scala/src/data.scala}
+    \section{Unit tests}
+    \subsection{Paradise benchmark (TODO)}
+    \lstinputlisting[language=scala,firstline=19,label=tests:companytest,showstringspaces=false]{scala/tests/CompanyTest.scala}
+    \subsection{EMGM}
+    \lstinputlisting[language=scala,firstline=19,label=tests:emgm,showstringspaces=false]{scala/tests/emgm.scala}
+    \subsection{LIGD}
+    \lstinputlisting[language=scala,firstline=19,label=tests:ligd,showstringspaces=false]{scala/tests/ligd.scala}
+    \subsection{Uniplate}
+    \lstinputlisting[language=scala,firstline=1,label=tests:uniplate,showstringspaces=false]{scala/tests/uniplate.scala}
 
     \section{Benchmark}
-    \lstinputlisting[language=scala,firstline=19,label=src:test-,showstringspaces=false]{scala/test.scala}
+    \lstinputlisting[language=scala,firstline=19,label=src:test-,showstringspaces=false]{scala/src/test.scala}
 \end{document}
