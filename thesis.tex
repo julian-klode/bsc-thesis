@@ -8,8 +8,10 @@
 \usepackage{listings}
 \usepackage{url}
 \usepackage{amssymb}
+\usepackage{amsthm}
 
-
+\theoremstyle{definition}
+\newtheorem{example}{Example}[subsection]
 
 
 \lstdefinelanguage{scala}{
@@ -87,12 +89,10 @@
     \clearpage{}
     \input{libraries/uniplate}
     \input{libraries/shapeless}
-    \chapter{Implementing Datatype-Generic Programming in Scala}
+    \chapter{Generic Operation Samples}
     \section{Name-binding Operations}
     \section{Derived Data Types}
-    \section{GPBench}
-    GPBench is a suite of benchmarks for comparing generic programming
-    libraries in Haskell \cite{DBLP:conf/haskell/RodriguezJJGKO08}.
+    \input{examples/paradise}
 
     \section{Benchmarks}
 

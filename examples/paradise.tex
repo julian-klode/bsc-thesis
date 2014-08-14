@@ -1,0 +1,65 @@
+\section{Paradise benchmark}
+GPBench is a suite of benchmarks for comparing generic programming
+libraries in Haskell \cite{DBLP:conf/haskell/RodriguezJJGKO08}. One
+benchmark included in it is the so-called paradise benchmark.
+
+The paradise benchmark looks at data structures representing a company
+and tries to transform it, by increasing every salary by 10\%.{}
+
+\lstinputlisting[language=scala,firstline=28,lastline=39,float=ht,caption=Paradise benchmark data structures,label=src:data:company]{scala/src/data.scala}
+
+The standard example data can be seen in Listing~\ref{src:data:company:example}.
+
+\lstinputlisting[language=scala,firstline=41,lastline=60,float=ht,caption=Paradise benchmark example data,label=src:data:company:example]{scala/src/data.scala}
+
+Apart from increasing the salary, we will also look at querying salaries.
+
+
+\subsection{LIGD}
+
+Given the data structures above and our implementation of LIGD that supports
+subtyping \cd{RType}, implementing both operations is fairly straight forward.
+
+First of all, the type representations. For the data types \cd{Person},
+\cd{Employee}, and \cd{Company}, we can use the simplest form of definition,
+by using the \cd{rType} function we added to our LIGD implementation.
+
+\lstinputlisting[language=scala,firstline=29,lastline=31,float=ht,caption=Person\, Employee\, Company representation in LIGD,label=src:ligd-company:stuff]{scala/src/ligd-company.scala}
+
+Because we want to query and transform salaries, we need to treat salaries
+specially, so we can pattern match on it (otherwise we would need to compare,
+but pattern matching is easier to read):
+
+\lstinputlisting[language=scala,firstline=24,lastline=26,float=ht,caption=Salary representation in LIGD,label=src:ligd-company:salary]{scala/src/ligd-company.scala}
+
+Finally, the \cd{DUnit} and \cd{Dept} types are mutually recursive. We would
+like to use \cd{rType} here as well, so the compiler automatically infers more
+stuff, but that implicitness breaks laziness and thus cause an endless
+recursion. We can preserve laziness by using the \cd{RType} constructor instead
+of our short-hand \cd{rType} function and specifying the (recursive) first
+parameter manually \footnote{We could even use the \cd{rep} function we added to
+LIGD here, but that would decrease readability}.
+
+\lstinputlisting[language=scala,firstline=34,lastline=43,float=t,caption=Mutually recursive representations,label=src:ligd-company:mutual]{scala/src/ligd-company.scala}
+
+Now let us look at two examples.
+
+\begin{example}[Query: Summing all salaries]
+
+Querying salaries is relatively straight forward. Pattern match on all standard
+LIGD types, and recursive for the product, sum, RType types; but before matching
+against \cd{RType} match against \cd{RSalary}:
+
+\lstinputlisting[language=scala,firstline=46,lastline=55,caption=Summing salaries in LIGD (manually),label=src:ligd-company:sumSalaryOld]{scala/src/ligd-company.scala}
+\end{example}
+
+\subsubsection*{Example 2: Transformation: Increase all salaries}
+
+
+
+
+\subsection{EMGM}
+
+\subsection{Uniplate}
+
+\subsection{Shapeless}
