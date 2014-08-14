@@ -9,14 +9,18 @@ of a \cd{Generic} type class, with one method for each type of object
 supported, our slightly extended version can be seen in Figure~\ref{src:emgm:Generic}
 \lstinputlisting[firstline=40,lastline=50,label=src:emgm:Generic,caption=The \cd{Generic} trait in GM]{scala/src/emgm.scala}
 The parameter \cd{G} refers to a type constructor for a type that stores
-a function of a specific type -- For example, imagine we want to check
-arbitrary objects of the same type for equality. Our type \cd{G[\_]} must have a function that accepts two
+a function of a specific type.
+
+\begin{example}[Generic equality]
+Imagine we want to check arbitrary objects of the same type for equality.
+Our type \cd{G[\_]} must have a function that accepts two
 value of the type given by the first parameter, and returns a boolean
 -- see Listing~\ref{src:emgm:GEq}.
 \lstinputlisting[firstline=172,lastline=192,float=ht,label=src:emgm:GEq,caption=A generic equality function in GM]{scala/src/emgm.scala}
 
 We use closures here instead of normal methods in order to have the
-compiler infer the types automatically, as explained in Section~\ref{type-inference}.
+compiler infer the types automatically, as explained in Section~\ref{type-inference}. \qed
+\end{example}
 
 Being able to represent generic functions is only half of the work, though
 -- we still need a way to represent objects. Instead of converting objects
