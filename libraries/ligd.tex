@@ -60,9 +60,12 @@ Writing generic functions using LIGD is simple. We just pass the object(s)
 we are interested in to the function, along with their type representations,
 and then pattern match on the type representations.
 
-  \lstinputlisting[firstline=35,lastline=50,float=ht,caption=Generic Equality in LIGD,label=ligd-geq]{scala/src/ligd.scala}
+\begin{example}[Generic equality]
+Listing~\ref{ligd-geq} shows how to implement a simple function that checks for
+generic equality.
 
-This function is pretty much self-explaining.
+  \lstinputlisting[firstline=35,lastline=50,float=ht,caption=Generic Equality in LIGD,label=ligd-geq]{scala/src/ligd.scala}
+\end{example}
 
 \subsection{Differences to the Haskell implementation}
 One minor difference is that we implemented \cd{Rep} like we would implement
