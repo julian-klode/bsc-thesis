@@ -54,7 +54,7 @@ a class \cd{MyOrd} for ordering that also requires equality, we can write
 If we want to translate a type class containing a method that does not take a
 parameter of the type A, this style of writing becomes inconsistent.
 
-\ex Consider the type class
+\begin{example} Consider the type class
 \begin{lstlisting}[language=Haskell]
   class PerformerFactory a where
     factor :: a
@@ -73,6 +73,7 @@ The end result is inconsistent, because one method is now a method of
 instance objects whereas the other is translated to a global function. It
 also permits instances of the trait that only implement the \cd{factor}
 method.
+\end{example}
 \subsection{The functional approach}
 Remember the type class MyEq:
 \begin{lstlisting}[language=Haskell]
