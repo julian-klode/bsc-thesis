@@ -11,4 +11,15 @@ to LIGD, although with a bit more boilerplate:
 
 \paragraph{Uniplate}
 
+Finding the minimum in Uniplate could look something like this:
+
+\lstinputlisting[firstline=110,lastline=111,caption=Minimum in Uniplate,label=src:emgm:gmin]{scala/src/uniplate.scala}
+
+That is, you find all integers in the data structure recursively, and then
+simply pick the minimum. As a special bonus, this only works on data structures
+than can contain integers, because the \cd{Biplate} has \cd{Int} as a second
+parameter.
+
+Of course, this needs adjustments for negative integers, but serves as a good
+reference point. But to understand the idea, this is more than enough.
 \paragraph{Shapeless}
