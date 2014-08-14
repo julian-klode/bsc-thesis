@@ -28,6 +28,10 @@
   morestring=[b]"""
 }[keywords,comments,strings]
 
+\AtBeginDocument{\renewcommand{\thelstlisting}{\thesection.\arabic{lstlisting}}}
+\makeatletter
+\def\l@lstlisting#1#2{\@dottedtocline{1}{1.5em}{3.5em}{#1}{#2}}
+\makeatother
 
 \lstset{
       basicstyle=\footnotesize,%
@@ -121,6 +125,8 @@
 
     \bibliographystyle{alpha}
     \bibliography{thesis}
+
+    \lstlistoflistings
 
     \appendix{}
     \input{appendix-source}

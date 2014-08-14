@@ -41,7 +41,7 @@ Now consider that we want to treat lists specially, that is, create an
 ad-hoc case of \cd{geq} that handles lists directly, instead of as a
 sum of products representations. That is, we need a subclass of Generic
 that can work on lists, something like:
-\lstinputlisting[language=scala,firstline=240,lastline=242,label=src:emgm:GenericList,caption=,showstringspaces=false]{scala/src/emgm.scala}
+\lstinputlisting[language=scala,firstline=240,lastline=242,label=src:emgm:GenericList,caption=Generic with ad-hoc list case,showstringspaces=false]{scala/src/emgm.scala}
 Note that the special case for lists defers to the sum of product variant
 if it is not handled by the generic function. We can thus use that extra
 method (override it) or ignore it (and treat it using sums and products).
