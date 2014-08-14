@@ -1,0 +1,33 @@
+\chapter{Evaluation of the approaches}
+
+\section{Library overview}
+\begin{table}[ht]
+  \begin{tabular}{c|cccc}
+    Feature (and test)    & LIGD & EMGM & Uniplate & Shapeless \\
+                 \hline
+    Ad-hoc cases (company) & \checkmark & \checkmark & \checkmark & \checkmark \\
+    Multi-parameter functions (geq) & \checkmark & \checkmark & ($\times$) & \checkmark
+  \end{tabular}
+
+  \caption{Feature overview}
+\end{table}
+
+\section{Performance of the libraries}
+
+To test the performance of the libraries, we ran various tests with them. For
+each test, we executed it 600 thousand times, and calculated the average
+time of the last 300 thousand executions.
+
+The exact testing framework and all performed tests can be seen in
+section~\ref{src:test}.
+
+\begin{table}[ht]
+\input{bench}
+\caption{Benchmark results}
+\label{bench}
+\end{table}
+
+As we can see in in table~\ref{bench}, all tested libraries perform roughly
+the same time-wise.
+
+\section{Final remarks}
