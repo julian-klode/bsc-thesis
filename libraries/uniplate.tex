@@ -1,0 +1,25 @@
+\section{Uniplate}
+\summary{Not feasible without macros or code generators and fails generic equality test}
+
+Uniplate is a library that differentiates between two basic type of
+objects: Uniplates and Biplates. Uniplates are simple recursive types
+like terms or expressions, which form a graph where all inner nodes have
+the same common supertype. Biplates are types that contain other Uniplates,
+for example, a \cd{List a} has a \cd{Biplate List a}.
+
+
+Uniplate can theoretically be ported from Haskell to Scala, but it is not
+feasible to do without a way to automatically generate instances of the
+\cd{Biplate} type class, because the amount of biplates needed is quadratic
+to the number of types.
+
+Due to the way uniplate works, it is not possible to implement a generic
+equality function for two biplate objects. Because biplates work by only
+looking at a subset of the types elements (for example, a \cd{Biplate[Company,Salary]}
+only cares about Salaries in a company -- not enough to compare two companies). Even
+for Uniplates, defining a generic equality function won't work because we
+only have access to the objects themselves and not to members of a different
+type.
+
+A basic implementation of uniplate can be found in the \cd{uniplate.scala}
+source file in section~\ref{src:uniplate}.
