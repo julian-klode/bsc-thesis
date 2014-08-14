@@ -12,7 +12,7 @@ an implicit \cd{this} object, that is, they combine data and functions;
 whereas type classes do not reference any data.
 
 Given a type class like
-\begin{lstlisting}[language=Haskell,gobble=6]
+\begin{lstlisting}[language=Haskell,gobble=2]
   class MyEq a where
     myEquals :: a -> a -> Boolean
     myEquals a b = False
@@ -23,14 +23,14 @@ how do we translate this to Scala? There are two approaches:
 The object-oriented approach uses traits just like interfaces in
 Java are used. For example, the \cd{MyEq} type class would be translated
 to the following trait:
-\begin{lstlisting}[language=Scala,gobble=6]
+\begin{lstlisting}[language=Scala,gobble=2]
   trait MyEq[T] {
     def myEquals(b: T) : Boolean = false
   }
 \end{lstlisting}
 In order to implement this trait for a class the class must extend the
 trait and override the methods of the trait:
-\begin{lstlisting}[language=Scala,gobble=6]
+\begin{lstlisting}[language=Scala,gobble=2]
   class MyInt(val i: Int) extends MyEq[MyInt] {
     override def myEquals(b: MyInt) : Boolean = i == b.i
   }
@@ -39,13 +39,13 @@ This already shows one deficiency of the traits approach: We cannot
 implement a trait for a type without modifying that type itself.
 
 Writing a function using this approach is straight forward:
-\begin{lstlisting}[language=Scala,gobble=6]
+\begin{lstlisting}[language=Scala,gobble=2]
   def myEquals[T <: MyEq[T]](a: T, b: T) = a.myEquals(b)
 \end{lstlisting}
 
 This style makes it easy to specify contexts, so for example, if we have
 a class \cd{MyOrd} for ordering that also requires equality, we can write
-\begin{lstlisting}[language=Scala,gobble=6]
+\begin{lstlisting}[language=Scala,gobble=2]
   trait MyOrd[T] extends MyEq[T] {
     def myLessOrEqual(b: T) : Boolean
   }
@@ -55,7 +55,7 @@ If we want to translate a type class containing a method that does not take a
 parameter of the type A, this style of writing becomes inconsistent.
 
 \ex Consider the type class
-\begin{lstlisting}[language=Haskell,gobble=6]
+\begin{lstlisting}[language=Haskell,gobble=2]
   class PerformerFactory a where
     factor :: a
     perform :: a -> Boolean
@@ -63,7 +63,7 @@ parameter of the type A, this style of writing becomes inconsistent.
 We can only directly translate the \cd{perform} method to Scala. The \cd{factor}
 method can only be translated by use of a generic function -- this will
 require a stub implementation, that instances can specialize.
-\begin{lstlisting}[language=Scala,gobble=6]
+\begin{lstlisting}[language=Scala,gobble=2]
   trait PerformerFactory[A] {
     def factor : A
   }
@@ -75,14 +75,14 @@ also permits instances of the trait that only implement the \cd{factor}
 method.
 \subsection{The functional approach}
 Remember the type class MyEq:
-\begin{lstlisting}[language=Haskell,gobble=6]
+\begin{lstlisting}[language=Haskell,gobble=2]
   class MyEq a where
     myEquals :: a -> a -> Boolean
     myEquals a b = False
 \end{lstlisting}
 We can ignore the implicit this parameter in traits and translate the type
 class as:
-\begin{lstlisting}[language=Scala,gobble=6]
+\begin{lstlisting}[language=Scala,gobble=2]
   trait MyEq[A] {
     def myEquals(a: A, b: A) = false
   }
@@ -93,7 +93,7 @@ We also provided a global \cd{myEquals} function to make our life easier.
 Now in order to implement the trait for a type, we need to define an instance
 of the trait for this type. Instances of those traits correspond to dictionaries
 in Haskell, and can be implemented like this:
-\begin{lstlisting}[language=Scala,gobble=6]
+\begin{lstlisting}[language=Scala,gobble=2]
   implicit def MyEqInt = new MyEq[Int] {
     override def myEquals(a: Int, b: Int) = a == b
   }
@@ -102,14 +102,14 @@ The \cd{implicit} keyword is a special syntactic sugar provided by Scala
 that makes our work easier. Without it, if we wanted to compare two objects,
 we would need to manually pass the instance of the trait to the function,
 like this:
-\begin{lstlisting}[language=Scala,gobble=6]
+\begin{lstlisting}[language=Scala,gobble=2]
   > myEquals(1, 1)(MyEq)
   true
 \end{lstlisting}
 By making \cd{MyEqInt} and the \cd{eq} parameter of \cd{myEquals} implicit,
 the Scala compiler can automatically figure out that \cd{MyEqInt} is the
 correct argument for the \cd{eq} parameter, and we can now run:
-\begin{lstlisting}[language=Scala,gobble=6]
+\begin{lstlisting}[language=Scala,gobble=2]
   > myEquals(1, 1)
   true
 \end{lstlisting}
@@ -118,7 +118,7 @@ correct argument for the \cd{eq} parameter, and we can now run:
 We can also implement instance that require some sort of context. For
 example, if we want to implement \cd{MyEq} for tuples of objects implementing
 \cd{MyEq} as well, we can write:
-\begin{lstlisting}[language=Scala,gobble=6]
+\begin{lstlisting}[language=Scala,gobble=2]
   implicit def myEqTuple[A,B](implicit ea: MyEq[A], eb: MyEq[B]) =
     new MyEq[(A,B)]{
     override def myEquals(a: (A,B), b: (A,B)) = ea.myEquals(a._1, b._1)
@@ -127,12 +127,12 @@ example, if we want to implement \cd{MyEq} for tuples of objects implementing
 \end{lstlisting}
 Now we can compare tuples: For example, in the following example, Scala will
 automatically infer the correct instance of \cd{MyEq[(Int, Int)]}:
-\begin{lstlisting}[language=Scala,gobble=6]
+\begin{lstlisting}[language=Scala,gobble=2]
   > myEquals((1,2), (1,2))
   true
 \end{lstlisting}
 We can still pass  it manually though
-\begin{lstlisting}[language=Scala,gobble=6]
+\begin{lstlisting}[language=Scala,gobble=2]
   > myEquals((1,2), (1,2))(myEqTuple(MyEqInt, MyEqInt))
   true
 \end{lstlisting}
@@ -146,7 +146,7 @@ to this are anonymous functions. If the Scala compiler knows which type the
 function must have, it can automatically infer the type of an anonymous
 function. Thus, in order to avoid repetitious type information in the code,
 we can change our \cd{MyEq} example to:
-\begin{lstlisting}[language=Scala,gobble=6]
+\begin{lstlisting}[language=Scala,gobble=2]
   trait MyEq[A] {
     def myEquals : (A => A => Boolean) = a => b => false
   }
@@ -162,7 +162,7 @@ Another thing that seems to matter a lot is the order of parameters. If
 the less complex types are left of the more complex types, the more
 complex types can be inferred more easily. For example, in Haskell,
 \cd{foldl} has the signature:
-\begin{lstlisting}[language=Haskell,gobble=6]
+\begin{lstlisting}[language=Haskell,gobble=2]
   foldl :: (a -> b -> a) -> a -> [b] -> a
 \end{lstlisting}
 Scala does not seem to be able to understand this, it will fail to
@@ -171,6 +171,6 @@ the end fixes the issue, as Scala can then simply infer from left
 to right. It basically looks like this in Scala (if you ignore that
 the first argument is actually the object which foldLeft is a method
 of):
-\begin{lstlisting}[language=Scala,gobble=6]
+\begin{lstlisting}[language=Scala,gobble=2]
   foldLeft[a,b] : [b] => a => (a => b => a) => a
 \end{lstlisting}

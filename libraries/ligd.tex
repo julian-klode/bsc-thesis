@@ -17,13 +17,13 @@ In order to work with user-defined (case) classes, those need to be
 translated to a representation using sums and products. We need an
 isomorphism between the user-defined class and a sum of product type. First
 of all, we can define an isomorphismus as:
-\begin{lstlisting}[language=scala,gobble=6]
+\begin{lstlisting}[language=scala,gobble=2]
   class EP[B, C](val from: B ⇒ C, val to: C ⇒ B)
 \end{lstlisting}
 Now we can define a \cd{Rep} instance, that represents values of a custom
 type \cd{B} and converts it to a sum of product notation of type \cd{C},
 something like this:
-\begin{lstlisting}[language=scala,gobble=6]
+\begin{lstlisting}[language=scala,gobble=2]
   case class RType[C, B](val c: Rep[C], val ep: EP[B, C]) extends Rep[B]
 \end{lstlisting}
 There is one problem though: The representation of \cd{C} may be recursive,
@@ -32,7 +32,7 @@ the list type. Thus, the parameter \cd{c} must be lazy. Scala does not allow
 lazy \cd{val}s on case classes, though, so this needs to be worked around.
 
 There are two approaches: One is encoding the thunk manually, like:
-\begin{lstlisting}[language=scala,gobble=6]
+\begin{lstlisting}[language=scala,gobble=2]
   case class RType[C, B](val c: () => Rep[C], val ep: EP[B, C]) extends Rep[B]
 \end{lstlisting}
 This is very easy, but looks inconsistent in usage. Another approach is to
@@ -92,12 +92,12 @@ When representing generic types such as Lists, we can create a subclass
 of RType with parameters representing the generic arguments. We can then
 define a custom \cd{equals()} method, as seen in listing~\ref{rmycustomtype}.
 
-\begin{lstlisting}[language=Scala,gobble=8,float,caption=Representing custom generic types,label=rmycustomtype]
-    class RMyCustomType[T1, ...](r1: Rep[T1], ...) {
-        override def equals(b: Any) : Boolean = b match {
-            case RMyCustomType(r1, ...) => r1 == this.r1 &&
-                                           r2 == this.r2 && ...
-            case _ => false
-        }
+\begin{lstlisting}[language=Scala,gobble=2,float,caption=Representing custom generic types,label=rmycustomtype]
+  class RMyCustomType[T1, ...](r1: Rep[T1], ...) {
+    override def equals(b: Any) : Boolean = b match {
+      case RMyCustomType(r1, ...) => r1 == this.r1 &&
+                                     r2 == this.r2 && ...
+      case _ => false
     }
+  }
 \end{lstlisting}
