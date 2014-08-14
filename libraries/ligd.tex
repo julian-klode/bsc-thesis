@@ -41,7 +41,8 @@ and \cd{unapply} methods. Listing~\ref{ligd-rtype} shows how this is
 implemented.
 \lstinputlisting[firstline=76,lastline=95,float=ht,caption=Implementation of RType,label=ligd-rtype]{scala/src/ligd.scala}
 
-\textbf{Example (Lists):} In order to represent a list, we encode the
+\begin{example}[Lists]
+In order to represent a list, we encode the
 list as a sum of products, or to be precise, we want to encode a \cd{List[A]}
 as: \cd{Either[Unit, (A, List[A])]}. In order to do this, we need functions
 that convert from \cd{List[A]} to \cd{Either[Unit, (A, List[A])]} and
@@ -52,6 +53,7 @@ vice versa. An implementation of those functions is given in figure~\ref{ligd-rl
 \lstinputlisting[firstline=101,lastline=122,float=ht,caption=Implementation of rList,label=ligd-rlist]{scala/src/ligd.scala}
 
 Note how the first parameter of \cd{RType} is recursive.
+\end{example}
 
 \subsection{Writing generic functions}
 Writing generic functions using LIGD is simple. We just pass the object(s)
