@@ -7,13 +7,13 @@ encoding of generic functions. While objects are still viewed as sums and
 products of scalar values, generic functions are now defined as instances
 of a \cd{Generic} type class, with one method for each type of object
 supported, our slightly extended version can be seen in Figure~\ref{src:emgm:Generic}
-\lstinputlisting[language=scala,firstline=40,lastline=50,label=src:emgm:Generic,caption=The \cd{Generic} trait in GM,showstringspaces=false]{scala/src/emgm.scala}
+\lstinputlisting[firstline=40,lastline=50,label=src:emgm:Generic,caption=The \cd{Generic} trait in GM,showstringspaces=false]{scala/src/emgm.scala}
 The parameter \cd{G} refers to a type constructor for a type that stores
 a function of a specific type -- For example, imagine we want to check
 arbitrary objects of the same type for equality. Our type \cd{G[\_]} must have a function that accepts two
 value of the type given by the first parameter, and returns a boolean
 -- see Listing~\ref{src:emgm:GEq}.
-\lstinputlisting[language=scala,firstline=172,lastline=192,float=ht,label=src:emgm:GEq,caption=A generic equality function in GM,showstringspaces=false]{scala/src/emgm.scala}
+\lstinputlisting[firstline=172,lastline=192,float=ht,label=src:emgm:GEq,caption=A generic equality function in GM,showstringspaces=false]{scala/src/emgm.scala}
 
 We use closures here instead of normal methods in order to have the
 compiler infer the types automatically, as explained in Section~\ref{type-inference}.
@@ -23,7 +23,7 @@ Being able to represent generic functions is only half of the work, though
 to a representation of sums and products, we simply call the members of
 the \cd{Generic} instance we need.
 
-\lstinputlisting[language=scala,firstline=58,lastline=82,float=ht,label=src:emgm:Rep,caption=The \cd{Rep} trait in GM,showstringspaces=false]{scala/src/emgm.scala}
+\lstinputlisting[firstline=58,lastline=82,float=ht,label=src:emgm:Rep,caption=The \cd{Rep} trait in GM,showstringspaces=false]{scala/src/emgm.scala}
 
 We can now, similar to  LIGD, represent arbitrary types as sums of products.
 Recall the list example from LIGD.
@@ -34,18 +34,18 @@ more verbose definition of \cd{RList}, because we need to split the generic
 function `creation' (the description of the type) out in \cd{rList}.
 
 We will see that this only gets worse once we introduce ad-hoc cases.
-\lstinputlisting[language=scala,firstline=119,lastline=138,float=ht,label=src:emgm:rList,caption=Representing lists in GM,showstringspaces=false]{scala/src/emgm.scala}
+\lstinputlisting[firstline=119,lastline=138,float=ht,label=src:emgm:rList,caption=Representing lists in GM,showstringspaces=false]{scala/src/emgm.scala}
 
 \subsection{Extensibility and Modularity}
 Now consider that we want to treat lists specially, that is, create an
 ad-hoc case of \cd{geq} that handles lists directly, instead of as a
 sum of products representations. That is, we need a subclass of Generic
 that can work on lists, something like:
-\lstinputlisting[language=scala,firstline=240,lastline=242,label=src:emgm:GenericList,caption=Generic with ad-hoc list case,showstringspaces=false]{scala/src/emgm.scala}
+\lstinputlisting[firstline=240,lastline=242,label=src:emgm:GenericList,caption=Generic with ad-hoc list case,showstringspaces=false]{scala/src/emgm.scala}
 Note that the special case for lists defers to the sum of product variant
 if it is not handled by the generic function. We can thus use that extra
 method (override it) or ignore it (and treat it using sums and products).
-\lstinputlisting[language=scala,firstline=253,lastline=270,float=ht,label=src:emgm:GEqList,caption=Generic equality specialised to lists,showstringspaces=false]{scala/src/emgm.scala}
+\lstinputlisting[firstline=253,lastline=270,float=ht,label=src:emgm:GEqList,caption=Generic equality specialised to lists,showstringspaces=false]{scala/src/emgm.scala}
 
 What we are still missing is a sort of dispatcher, like \cd{Rep} in Generics
 for the masses. Without such a dispatcher, using generic functions like

@@ -1,6 +1,6 @@
 \section{LIGD -- Translation of LIGD}
 \summary{The straight-forward solution to most problems}
-\lstinputlisting[language=scala,firstline=53,lastline=68,float=ht,caption=LIGD Basics,label=ligd-base]{scala/src/ligd.scala}
+\lstinputlisting[firstline=53,lastline=68,float=ht,caption=LIGD Basics,label=ligd-base]{scala/src/ligd.scala}
 
 LIGD is a simple library that provides a \cd{Rep} trait that describes
 the structure of a type using sums, products, and scalar values.
@@ -17,13 +17,13 @@ In order to work with user-defined (case) classes, those need to be
 translated to a representation using sums and products. We need an
 isomorphism between the user-defined class and a sum of product type. First
 of all, we can define an isomorphismus as:
-\begin{lstlisting}[language=scala,gobble=2]
+\begin{lstlisting}[gobble=2]
   class EP[B, C](val from: B ⇒ C, val to: C ⇒ B)
 \end{lstlisting}
 Now we can define a \cd{Rep} instance, that represents values of a custom
 type \cd{B} and converts it to a sum of product notation of type \cd{C},
 something like this:
-\begin{lstlisting}[language=scala,gobble=2]
+\begin{lstlisting}[gobble=2]
   case class RType[C, B](val c: Rep[C], val ep: EP[B, C]) extends Rep[B]
 \end{lstlisting}
 There is one problem though: The representation of \cd{C} may be recursive,
@@ -32,14 +32,14 @@ the list type. Thus, the parameter \cd{c} must be lazy. Scala does not allow
 lazy \cd{val}s on case classes, though, so this needs to be worked around.
 
 There are two approaches: One is encoding the thunk manually, like:
-\begin{lstlisting}[language=scala,gobble=2]
+\begin{lstlisting}[gobble=2]
   case class RType[C, B](val c: () => Rep[C], val ep: EP[B, C]) extends Rep[B]
 \end{lstlisting}
 This is very easy, but looks inconsistent in usage. Another approach is to
 not use a case class and provide a companion object with custom \cd{apply}
 and \cd{unapply} methods. Listing~\ref{ligd-rtype} shows how this is
 implemented.
-\lstinputlisting[language=scala,firstline=76,lastline=95,float=ht,caption=Implementation of RType,label=ligd-rtype]{scala/src/ligd.scala}
+\lstinputlisting[firstline=76,lastline=95,float=ht,caption=Implementation of RType,label=ligd-rtype]{scala/src/ligd.scala}
 
 \textbf{Example (Lists):} In order to represent a list, we encode the
 list as a sum of products, or to be precise, we want to encode a \cd{List[A]}
@@ -47,9 +47,9 @@ as: \cd{Either[Unit, (A, List[A])]}. In order to do this, we need functions
 that convert from \cd{List[A]} to \cd{Either[Unit, (A, List[A])]} and
 vice versa. An implementation of those functions is given in figure~\ref{ligd-rlist}.
 %-- We can then define an RType instance as:
-%\lstinputlisting[language=scala,firstline=109,lastline=113]{scala/src/ligd.scala}
+%\lstinputlisting[firstline=109,lastline=113]{scala/src/ligd.scala}
 
-\lstinputlisting[language=scala,firstline=101,lastline=122,float=ht,caption=Implementation of rList,label=ligd-rlist]{scala/src/ligd.scala}
+\lstinputlisting[firstline=101,lastline=122,float=ht,caption=Implementation of rList,label=ligd-rlist]{scala/src/ligd.scala}
 
 Note how the first parameter of \cd{RType} is recursive.
 
@@ -58,7 +58,7 @@ Writing generic functions using LIGD is simple. We just pass the object(s)
 we are interested in to the function, along with their type representations,
 and then pattern match on the type representations.
 
-  \lstinputlisting[language=scala,firstline=35,lastline=50,float=ht,caption=Generic Equality in LIGD,label=ligd-geq]{scala/src/ligd.scala}
+  \lstinputlisting[firstline=35,lastline=50,float=ht,caption=Generic Equality in LIGD,label=ligd-geq]{scala/src/ligd.scala}
 
 This function is pretty much self-explaining.
 
@@ -92,7 +92,7 @@ When representing generic types such as Lists, we can create a subclass
 of RType with parameters representing the generic arguments. We can then
 define a custom \cd{equals()} method, as seen in listing~\ref{rmycustomtype}.
 
-\begin{lstlisting}[language=Scala,gobble=2,float,caption=Representing custom generic types,label=rmycustomtype]
+\begin{lstlisting}[float,caption=Representing custom generic types,label=rmycustomtype]
   class RMyCustomType[T1, ...](r1: Rep[T1], ...) {
     override def equals(b: Any) : Boolean = b match {
       case RMyCustomType(r1, ...) => r1 == this.r1 &&

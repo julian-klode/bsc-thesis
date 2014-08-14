@@ -4,7 +4,7 @@ Many\footnote{Such as Haskell, Java, Scala, C++} programming languages these day
 Parametric Polymorphism allows the definition of data types that abstract over
 the type of some element they store, such as lists that can store elements of
 some unspecified type \lstinline{a}:
-\begin{lstlisting}[language=scala]
+\begin{lstlisting}
 sealed abstract class List[a]
 case class Nil[a]() extends List[a]
 case class Cons[a](car: a, cdr: List[a]) extends List[a]
@@ -19,7 +19,7 @@ those store integers. We want to increase every integer by one. That is, we want
 to write a function that takes a container of integers and increases every integer
 by one. That is, we want to write something like:
 
-\begin{lstlisting}[language=Scala]
+\begin{lstlisting}
 def incInt[C[_]](c: C[Int]) = everywhere((i: Int) => i + 1)(c)
 \end{lstlisting}
 (Note: This does not actually work with shapeless)
