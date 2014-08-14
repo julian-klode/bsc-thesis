@@ -6,6 +6,7 @@
 \usepackage{hyperref}
 \usepackage{todonotes}
 \usepackage{listings}
+\usepackage{lstautogobble}
 \usepackage{url}
 \usepackage{amssymb}
 \usepackage{amsthm}
@@ -38,6 +39,8 @@
 \lstset{
       basicstyle=\footnotesize,%
       frame=tb,
+      language=scala,
+      autogobble=true,
       basewidth={0.5em,0.45em},
       literate={=}{{$=$}}1
                {>}{{$>$}}1 {<}{{$<$}}1 {\\}{{$\lambda$}}1

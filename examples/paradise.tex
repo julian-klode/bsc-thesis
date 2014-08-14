@@ -51,11 +51,37 @@ LIGD types, and recursive for the product, sum, RType types; but before matching
 against \cd{RType} match against \cd{RSalary}:
 
 \lstinputlisting[language=scala,firstline=46,lastline=55,caption=Summing salaries in LIGD (manually),label=src:ligd-company:sumSalaryOld]{scala/src/ligd-company.scala}
+
+We can however also use the generic fold we implemented earlier, the definition
+becomes a single line of code then:
+
+\lstinputlisting[language=scala,firstline=67,lastline=67,caption=Summing salaries in LIGD (fold),label=src:ligd-company:sumSalary]{scala/src/ligd-company.scala}
+
+Note: If we swapped around the first two parameters of \cd{gfoldl} we would not even
+need to specify the \cd{Float} type, as long as we would pass \cd{0.0} instead
+of 0.
+
 \end{example}
 
-\subsubsection*{Example 2: Transformation: Increase all salaries}
+\begin{example}[Transformation: Increase all salaries]
 
+Increasing the salaries by 10\% is what is usually called the paradise
+benchmark. Implementing this is straight forward as well in LIGD:
 
+\lstinputlisting[language=scala,firstline=58,lastline=65,caption=Increase the salaries in LIGD,label=src:ligd-company:sumSalary]{scala/src/ligd-company.scala}
+
+You can abstract this by building an \cd{everywhere} function\footnote{a sample implementation of \cd{everywhere} is included in the source code} that applies
+a transformation function, similar to EMGM and Uniplates \cd{transformBi} -- then
+you can just call everywhere with a salary-transforming function on your company,
+like this:
+\begin{lstlisting}[caption=Increase the salaries using \cd{everywhere}]
+  everywhere((i: Salary) ⇒ Salary(i.salary * 1.1F))(genCom)
+\end{lstlisting}
+
+\end{example}
+
+In any case, both examples are straight forward to implement. It cannot get
+much better.
 
 
 \subsection{EMGM}
