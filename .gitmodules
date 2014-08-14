@@ -1,0 +1,3 @@
+[submodule "scala"]
+	path = scala
+	url = git@github.com:julian-klode/bsc-thesis-code.git
