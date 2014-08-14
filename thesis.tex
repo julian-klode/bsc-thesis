@@ -11,10 +11,22 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 
-\theoremstyle{definition}
-\newtheorem{example}{Example}[subsection]
+% Setup the title page. Abuse some fields to get a nice layout
+\author{Julian Andres Klode\\Matriculation number: 2403668\\\\Supervised by: Yufei Cai}
+\subject{\includegraphics[height=.13\textheight]{graphics/Logo_uni}\\Programming Languages and Software Technology Group\\Prof. Ostermann\\[1.5cm]}
+\title{Performance and Interfaces of Datatype-Generic Scala Programs}
+\subtitle{Bachelor Thesis}
+\date{}
 
+% Setup PDF support
+\hypersetup{
+   hidelinks=true,
+   pdfauthor={Julian Andres Klode},
+   pdftitle={Bachelor Thesis: Performance and Interfaces of Datatype-Generic Scala Programs},
+   pdfsubject={Programming Languages},
+}
 
+% Setup listings
 \lstdefinelanguage{scala}{
   keywords={%
           abstract,case,catch,class,def,do,else,extends,%
@@ -30,13 +42,8 @@
   morestring=[b]"""
 }[keywords,comments,strings]
 
-\AtBeginDocument{\renewcommand{\thelstlisting}{\thesection.\arabic{lstlisting}}}
-\makeatletter
-\def\l@lstlisting#1#2{\@dottedtocline{1}{1.5em}{3.5em}{#1}{#2}}
-\makeatother
-
 \lstset{
-      basicstyle=\footnotesize,%
+      basicstyle=\footnotesize,% Not sure yet. Code is large.
       frame=tb,
       language=scala,
       autogobble=true,
@@ -50,34 +57,35 @@
                {<=}{{$\leq$}}2 {|}{{$\mid$}}1
 }
 
-\hypersetup{
-   hidelinks=true,
-   pdfauthor={Julian Andres Klode},
-   pdftitle={Bachelor Thesis: Performance and Interfaces of Datatype-Generic Scala Programs},
-   pdfsubject={Programming Languages},
-}
+% Add the current section to the listing number
+\AtBeginDocument{\renewcommand{\thelstlisting}{\thesection.\arabic{lstlisting}}}
+\makeatletter
+\def\l@lstlisting#1#2{\@dottedtocline{1}{1.5em}{3.5em}{#1}{#2}}
+\makeatother
 
+% Set tocdepth to 1, otherwise we get a multi-page table of contents
 \setcounter{tocdepth}{1}
 
-
-\author{Julian Andres Klode\\Matriculation number: 2403668\\\\Supervised by: Yufei Cai}
-% Let's abuse the subject field for now
-\subject{\includegraphics[height=.13\textheight]{graphics/Logo_uni}\\Programming Languages and Software Technology Group\\Prof. Ostermann\\[1.5cm]}
-\title{Performance and Interfaces of Datatype-Generic Scala Programs}
-\subtitle{Bachelor Thesis}
+% Additional commands
 \newcommand{\cd}{\texttt}
 \newcommand{\summary}[1]{\textit{\textbf{In short:} #1}}
-\date{}
 
+% An example environment
+\theoremstyle{definition}
+\newtheorem{example}{Example}[subsection]
 
 \begin{document}
+
+    % Title page, abstract, toc: Roman page numbers starting at i
     \pagenumbering{roman}
+
     \maketitle{}
     \input{abstract}
     \selectlanguage{english}
-
     \tableofcontents{}
     \clearpage
+
+    % Main part: Use arabic page numbers starting at 1
     \pagenumbering{arabic}
     \setcounter{page}{1}
 
@@ -87,11 +95,12 @@
     \input{examples}
     \input{evaluation}
 
+    % Bibliography and lists of stuff
     \bibliographystyle{alpha}
     \bibliography{thesis}
-
     \lstlistoflistings
 
+    % Appendix
     \appendix{}
     \input{appendix-source}
 \end{document}
