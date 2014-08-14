@@ -30,7 +30,7 @@
 
 
 \lstset{
-      basicstyle=\small,%
+      basicstyle=\footnotesize,%
       frame=tb,
       basewidth={0.5em,0.45em},
       literate={=}{{$=$}}1
@@ -56,6 +56,7 @@
 \subtitle{Bachelor Thesis}
 \newcommand{\cd}{\texttt}
 \newcommand{\ex}{\paragraph{Example:}}
+\newcommand{\summary}[1]{\textit{\textbf{In short:} #1}}
 \date{}
 
 
@@ -213,6 +214,7 @@
     \end{lstlisting}
 
     \section{Making the most of type inference}
+    \label{type-inference}
 
     Compared to Haskell, Scala's type inference is weaker. For example, when
     defining a function, the type of parameters need to be defined. An exception
@@ -253,7 +255,8 @@
     \chapter{Libraries}
 
     \section{LIGD -- Translation of LIGD}
-    \lstinputlisting[language=scala,firstline=55,lastline=70,float=ht,caption=LIGD Basics,label=ligd-base]{scala/src/ligd.scala}
+    \summary{The straight-forward solution to most problems}
+    \lstinputlisting[language=scala,firstline=53,lastline=68,float=ht,caption=LIGD Basics,label=ligd-base]{scala/src/ligd.scala}
 
     LIGD is a simple library that provides a \cd{Rep} trait that describes
     the structure of a type using sums, products, and scalar values.
@@ -293,7 +296,7 @@
     not use a case class and provide a companion object with custom \cd{apply}
     and \cd{unapply} methods. Listing~\ref{ligd-rtype} shows how this is
     implemented.
-    \lstinputlisting[language=scala,firstline=78,lastline=97,float=ht,caption=Implementation of RType,label=ligd-rtype]{scala/src/ligd.scala}
+    \lstinputlisting[language=scala,firstline=76,lastline=95,float=ht,caption=Implementation of RType,label=ligd-rtype]{scala/src/ligd.scala}
 
     \textbf{Example (Lists):} In order to represent a list, we encode the
     list as a sum of products, or to be precise, we want to encode a \cd{List[A]}
@@ -303,7 +306,7 @@
     %-- We can then define an RType instance as:
     %\lstinputlisting[language=scala,firstline=109,lastline=113]{scala/src/ligd.scala}
 
-    \lstinputlisting[language=scala,firstline=103,lastline=124,float=ht,caption=Implementation of rList,label=ligd-rlist]{scala/src/ligd.scala}
+    \lstinputlisting[language=scala,firstline=101,lastline=122,float=ht,caption=Implementation of rList,label=ligd-rlist]{scala/src/ligd.scala}
 
     Note how the first parameter of \cd{RType} is recursive.
 
@@ -312,7 +315,7 @@
     we are interested in to the function, along with their type representations,
     and then pattern match on the type representations.
 
-      \lstinputlisting[language=scala,firstline=37,lastline=52,float=ht,caption=Generic Equality in LIGD,label=ligd-geq]{scala/src/ligd.scala}
+      \lstinputlisting[language=scala,firstline=35,lastline=50,float=ht,caption=Generic Equality in LIGD,label=ligd-geq]{scala/src/ligd.scala}
 
     This function is pretty much self-explaining.
 
@@ -359,8 +362,66 @@
 
 
     \section{EMGM -- Translation of Extensible and Modular Generics for the Masses}
+    \summary{More verbose (especially for ad-hoc cases) than LIGD}
 
+
+    In Generics for the Masses \cite{GM}, Ralf Hinze introduces an alternative
+    encoding of generic functions. While objects are still viewed as sums and
+    products of scalar values, generic functions are now defined as instances
+    of a \cd{Generic} type class, with one method for each type of object
+    supported, our slightly extended version can be seen in Figure~\ref{src:emgm:Generic}
+    \lstinputlisting[language=scala,firstline=40,lastline=50,label=src:emgm:Generic,caption=The \cd{Generic} trait in GM,showstringspaces=false]{scala/src/emgm.scala}
+    The parameter \cd{G} refers to a type constructor for a type that stores
+    a function of a specific type -- For example, imagine we want to check
+    arbitrary objects of the same type for equality. Our type \cd{G[\_]} must have a function that accepts two
+    value of the type given by the first parameter, and returns a boolean
+    -- see Listing~\ref{src:emgm:GEq}.
+    \lstinputlisting[language=scala,firstline=179,lastline=196,float=ht,label=src:emgm:GEq,caption=A generic equality function in GM,showstringspaces=false]{scala/src/emgm.scala}
+
+    We use closures here instead of normal methods in order to have the
+    compiler infer the types automatically, as explained in Section~\ref{type-inference}.
+
+    Being able to represent generic functions is only half of the work, though
+    -- we still need a way to represent objects. Instead of converting objects
+    to a representation of sums and products, we simply call the members of
+    the \cd{Generic} instance we need.
+
+    \lstinputlisting[language=scala,firstline=58,lastline=82,float=ht,label=src:emgm:Rep,caption=The \cd{Rep} trait in GM,showstringspaces=false]{scala/src/emgm.scala}
+
+    We can now, similar to  LIGD, represent arbitrary types as sums of products.
+    Recall the list example from LIGD.
+    As we can see in Figure~\ref{src:emgm:rList}, the definition is similar to
+    the one in LIGD
+    -- the isomorphism is basically the same, the only difference is the slightly
+    more verbose definition of \cd{RList}, because we need to split the generic
+    function `creation' (the description of the type) out in \cd{rList}.
+
+    We will see that this only gets worse once we introduce ad-hoc cases.
+    \lstinputlisting[language=scala,firstline=119,lastline=138,float=ht,label=src:emgm:rList,caption=Representing lists in GM,showstringspaces=false]{scala/src/emgm.scala}
+
+    \subsection{Extensibility and Modularity}
+    Now consider that we want to treat lists specially, that is, create an
+    ad-hoc case of \cd{geq} that handles lists directly, instead of as a
+    sum of products representations. That is, we need a subclass of Generic
+    that can work on lists, something like:
+    \lstinputlisting[language=scala,firstline=240,lastline=242,label=src:emgm:GenericList,caption=,showstringspaces=false]{scala/src/emgm.scala}
+    Note that the special case for lists defers to the sum of product variant
+    if it is not handled by the generic function. We can thus use that extra
+    method (override it) or ignore it (and treat it using sums and products).
+    \lstinputlisting[language=scala,firstline=253,lastline=270,float=ht,label=src:emgm:GEqList,caption=Generic equality specialised to lists,showstringspaces=false]{scala/src/emgm.scala}
+
+    What we are still missing is a sort of dispatcher, like \cd{Rep} in Generics
+    for the masses. Without such a dispatcher, using generic functions like
+    \cd{GEqList} would not be easy.
+
+    \subsection{Comparison to LIGD}
+
+    %EMGM \cite{emgm} improves on a framework for generic programming first introduced
+
+    \clearpage
     \section{Uniplate}
+    \summary{Not feasible without macros or code generators and fails generic equality test}
+
     Uniplate is a library that differentiates between two basic type of
     objects: Uniplates and Biplates. Uniplates are simple recursive types
     like terms or expressions, which form a graph where all inner nodes have
@@ -372,6 +433,14 @@
     feasible to do without a way to automatically generate instances of the
     \cd{Biplate} type class, because the amount of biplates needed is quadratic
     to the number of types.
+
+    Due to the way uniplate works, it is not possible to implement a generic
+    equality function for two biplate objects. Because biplates work by only
+    looking at a subset of the types elements (for example, a \cd{Biplate[Company,Salary]}
+    only cares about Salaries in a company -- not enough to compare two companies). Even
+    for Uniplates, defining a generic equality function won't work because we
+    only have access to the objects themselves and not to members of a different
+    type.
 
     A basic implementation of uniplate can be found in the \cd{uniplate.scala}
     source file in section~\ref{src:uniplate}.
