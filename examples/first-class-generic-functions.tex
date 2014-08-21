@@ -1,0 +1,35 @@
+\section{First class generic functions}
+
+A generic function is a first class function if it can be passed to another
+generic function. This requires support for existential types in the programming
+language.
+
+\subsection{LIGD}
+
+Consider a generic function that can be applied to all representable values
+and returns a string. For example, a function \cd{gshow} that shows values.
+In Haskell, such a function would have the type:
+\begin{lstlisting}[language=Haskell]
+gshow :: forall a. Rep a -> a -> String
+\end{lstlisting}
+
+We want to represent this in Scala. Our first idea would be something like:
+\begin{lstlisting}
+gshow : (a => Rep[a] => String) forSome { type a }
+\end{lstlisting}
+This does not work however, the compiler will complain that the arguments do
+not match the type a when calling the function. What we can do is make the
+function a method of a trait, the trait being parameterized by the return
+type and the method's type parameterized by the existential type. That is, the
+Haskell type:
+\begin{lstlisting}[language=Haskell]
+gshow :: forall a. Rep a => a -> String
+\end{lstlisting}
+can be represented as \cd{Returning[String]}, where \cd{Returning} is defined
+as:
+\lstinputlisting[firstline=248,lastline=250,label=src:ligd:Returning,caption=Existential function in LIGD]{scala/src/ligd.scala}
+Our \cd{gshow} becomes an instance of that trait, and then it is truly first-class (but looks ugly):
+\lstinputlisting[firstline=255,lastline=271,label=src:ligd:Returning,caption=gshow in LIGD]{scala/src/ligd.scala}
+We can now define another function accepting generic functions, for example,
+\cd{gmapQ}:
+\lstinputlisting[firstline=280,lastline=286,label=src:ligd:Returning,caption=gshow in LIGD]{scala/src/ligd.scala}
