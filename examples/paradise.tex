@@ -98,25 +98,41 @@ of those types.
 Now we need some boilerplate to have implicit \cd{GRep} instances:
 \lstinputlisting[firstline=61,lastline=75,caption=Implicit instances of \cd{GRep},label=src:emgm-company:GRep]{scala/src/emgm-company.scala}
 
-
-
 \begin{example}[Query: Summing all salaries]
-
+Summing all salaries works as expected by using a very simple definition:
+\lstinputlisting[firstline=86,lastline=103,caption=Summing salaries in EMGM,label=src:emgm-company:sumSalary]{scala/src/emgm-company.scala}
 \end{example}
 
 \begin{example}[Transformation: Increase all salaries]
+It's straight-forward to do this manually. We split it though, and first look
+at transforming things in general and then at specializing this for the Salary
+case, as that avoids the same boilerplate for other cases of transformations.
 
+We consider a basic transformation as a function of type \cd{A => A}. In EMGM,
+we can encode this pattern as:
+\lstinputlisting[firstline=274,lastline=290,caption=Basic transform pattern,label=src:emgm:GTransform]{scala/src/emgm.scala}
+
+We can now simply extend that trait, as listing~\ref{src:emgm-company:incSalary} shows.
+\lstinputlisting[firstline=78,lastline=83,caption=Using the transform pattern: Increase salary,label=src:emgm-company:incSalary]{scala/src/emgm-company.scala}
+
+This breaks though if you want to have any other transformation than the Salary
+one, because Scala would not be able to infer the correct \cd{GRep}.
 \end{example}
 
 \subsection{Uniplate}
 
 
 \begin{example}[Query: Summing all salaries]
+ Trivial to do in uniplate: Get all salaries and fold over them:
+\begin{lstlisting}
+  def sumSalary[C](self: C)(implicit bp: Biplate[C, Salary]) =
+    universeBi(self).foldLeft(0.0F)((f, s) => f + s.salary)
+\end{lstlisting}
 
 \end{example}
 
 \begin{example}[Transformation: Increase all salaries]
-
+\todo{Not sure how to do yet}
 \end{example}
 
 
@@ -138,6 +154,6 @@ Transformations like that are easy to write in Shapeless. All we need to do
 is create a function that takes a \cd{Salary} and produces a new one and pass
 that to Shapeless' \cd{everywhere} function.
 
-\lstinputlisting[firstline=63,lastline=64,caption=Increasing salaries in Shapeless]{scala/tests/CompanyTest.scala}
+\lstinputlisting[firstline=67,lastline=68,caption=Increasing salaries in Shapeless]{scala/tests/CompanyTest.scala}
 
 \end{example}
