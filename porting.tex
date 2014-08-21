@@ -175,3 +175,51 @@ of):
 \begin{lstlisting}
   foldLeft[a,b] : [b] => a => (a => b => a) => a
 \end{lstlisting}
+
+\section{Representing existential types}
+\label{existential}
+Haskell libraries often use existential types like:
+\begin{lstlisting}[language=Haskell]
+  forall a. Rep a => a -> String
+\end{lstlisting}
+Representing such types in Scala is a bit more complicated. Functions, even
+generic ones, cannot be used as objects of such a type, because the Scala
+compiler wants to bind the \cd{a} type as soon as you pass the function to
+another function.
+
+There are two alternative encodings, however. Both use the same encoding for
+the functions, the difference is the encoding of the parameter type.
+
+So, first of all, in order to encode the a function of type \cd{forall a. Rep[a] => a -> b}
+in Scala, encode it as an object with an apply method containing the actual
+function.
+\begin{lstlisting}[float=ht,caption=Encoding an existential function]
+  object myfunction {
+    def apply[A: Rep](a: A) : b = ...
+  }
+\end{lstlisting}
+There are two variants now:
+
+\subsection{Trait}
+Provide a trait that specifies the type of function you want and make your
+function objects extend it. For example:
+\begin{lstlisting}
+  trait Returning[T] {
+    def apply[A: Rep](a: A) : T
+  }
+\end{lstlisting}
+
+Now in order to accept a function returning a \cd{T}, make it accept an object
+of \cd{Returning[T]}.
+
+\subsection{Structural type}
+We can also use structural types to avoid the need of extending the trait, and
+even the need of providing \cd{Returning}-like types for all number of parameters
+we might need. We can still provide a \cd{Returning} structural type, if we like
+though, so we do not have to write the complete type every time.
+
+Using structural types the \cd{Returning} type looks like this:
+\begin{lstlisting}
+  type Returning[T] = { def apply[A: Rep](a: A) : T }
+\end{lstlisting}
+and every object providing such a method is implicitly an instance of that type.
