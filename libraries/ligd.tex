@@ -67,7 +67,8 @@ generic equality.
   \lstinputlisting[firstline=35,lastline=50,float=ht,caption=Generic Equality in LIGD,label=ligd-geq]{scala/src/ligd.scala}
 \end{example}
 
-\subsection{Differences to the Haskell implementation}
+
+\subsection{Differences and Extensions to the Haskell implementation}
 One minor difference is that we implemented \cd{Rep} like we would implement
 a type class in Haskell. The original paper manually passed around \cd{Rep}
 instances for generic functions, we make use of Scala's implicit values.
@@ -85,6 +86,45 @@ existing code will be unaffected by new types.
 An example for this is the list type. Because we extended \cd{RType} as
 \cd{RList} we can now write a generic function that finds all lists of a
 specific element type in a data structure.
+
+\subsection{Extensibility}
+Imagine we have an existing generic function that we do not control (for example,
+in a different module) and want to add a special case to that function. Because
+the existing generic function has self-recursion this is usually impossible.
+
+It turns out that if we change the way we write the generic function slightly,
+we can actually extend it with new special cases. The changes are very simple:
+
+\begin{enumerate}
+  \item Convert the function into a class with an apply method containing the
+        existing function and replace all recursive calls to the functions with
+        calls to apply.
+  \item Provide an object that extends that class, this can then be called like
+        a function.
+\end{enumerate}
+
+We can now easily extend that `function', by extending the class and overriding
+the apply method, matching on the cases we are interested in and deferring the
+remaining cases to the implementation in the super class.
+
+For example, if we transform \cd{geq} according to those rules, we can
+easily extend it with a special case for lists, as shown in listing~\ref{src:ligd-extensible:geqlist}.\footnote{The complete example with the transformed \cd{geq} can be found in
+section~\ref{src:ligd-extensible}}
+\lstinputlisting[firstline=76,lastline=85,float=ht,caption=Extended Generic Equality in LIGD,label=src:ligd-extensible:geqlist]{scala/src/ligd-extensible.scala}
+This approach using classes is not applicable to Haskell, but it is possible
+to do something similar - by passing the function as an argument:
+\begin{enumerate}
+  \item Convert \cd{geq :: Rep[a] -> a -> a} to
+        \cd{geq\_ :: Rep[a] -> a -> a -> (forall a. Rep[a] -> a -> a)}
+        and change self-recursive calls to call the new argument
+  \item Add a  \cd{geq rep a b = geq\_ rep a b geq}
+\end{enumerate}
+
+Extending the function should now be straight forward. It is less useful to
+have this in Haskell, though, because LIGD in Haskell does not support ad-hoc
+cases, meaning we can only override the pre-defined type representations and not
+match on custom types. If support for named constructors is added however, it
+could still become useful enough.\footnote{See \url{http://code.haskell.org/generics/comparison/LIGD/LIGD.lhs} for an LIGD with named constructors}
 
 \subsubsection{Equality comparisons of type representations}
 The Haskell version of LIGD does not support comparing Rep instances
