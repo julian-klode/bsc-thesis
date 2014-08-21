@@ -1,8 +1,12 @@
 \section{Locating the smallest integer in a datatype}
 As another example, let's take a look at what it takes to find the smallest
-integer in a data structure.
+integer in a data structure. In all cases, we return \cd{Int.MaxValue} if we cannot
+find any (smaller) integers.
 
-\paragraph{LIGD}
+\paragraph{LIGD} The definition in LIGD is straight forward:
+\lstinputlisting[firstline=293,lastline=300,caption=Minimum in LIGD,label=src:ligd:min]{scala/src/ligd.scala}
+LIGD also provides a suitable variants of folds, so implementing it manually
+is not even needed -- see the section~\ref{src:ligd} for more examples.
 
 \paragraph{EMGM} In EMGM, the definition is relatively straight forward, similar
 to LIGD, although with a bit more boilerplate:
@@ -19,7 +23,4 @@ That is, you find all integers in the data structure recursively, and then
 simply pick the minimum. As a special bonus, this only works on data structures
 than can contain integers, because the \cd{Biplate} has \cd{Int} as a second
 parameter.
-
-Of course, this needs adjustments for negative integers, but serves as a good
-reference point. But to understand the idea, this is more than enough.
 \paragraph{Shapeless}
