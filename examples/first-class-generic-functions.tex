@@ -27,7 +27,19 @@ to use functions.
 
 \subsection{EMGM}
 \todo{Add EMGM}
+
 \subsection{Uniplate}
-\todo{Add uniplate}
+It is possible to encode all sorts of functions using a similar encoding
+as used in LIGD to make them first class objects. Then it is possible to write
+higher order functions that can apply them. Because \cd{Biplate} objects only offer
+a limited a view at objects, though, this does not seem very worthwhile. For
+example, we cannot write a \cd{gmapQ} like in the other tested libraries, because
+\cd{Biplate} objects only look at one type of `element' within a containing
+type.
+
+In addition, we could not even write something like \cd{gshow} in Uniplate,
+because there's no way to look at all arguments of a constructor.
+
+
 \subsection{Shapeless}
 \todo{Add shapeless, seems horrible}
