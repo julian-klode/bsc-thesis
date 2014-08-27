@@ -1,7 +1,7 @@
 \section{First class generic functions}
 
 A generic function is a first class function if it can be passed to another
-generic function. This requires support for existential types in the programming
+generic function. This requires support for universal and existential types in the programming
 language.
 
 \subsection{LIGD}
@@ -13,7 +13,7 @@ In Haskell, such a function would have the type:
 gshow :: forall a. Rep a -> a -> String
 \end{lstlisting}
 
-Using the encoding of existential types shown in section~\ref{existential},
+Using the encoding of universal types shown in section~\ref{universal-types},
 we can encode our gshow function as an object with an apply method:
 \lstinputlisting[firstline=255,lastline=271,label=src:ligd:Returning,caption=gshow in LIGD]{scala/src/ligd.scala}
 We can now define another function accepting generic functions, for example, \cd{gmapQ}:

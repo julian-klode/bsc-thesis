@@ -176,14 +176,14 @@ of):
   foldLeft[a,b] : [b] => a => (a => b => a) => a
 \end{lstlisting}
 
-\section{Representing existential types}
-\label{existential}
-Haskell libraries often use existential types like:
+\section{Representing universal types}
+\label{universal-types}
+Haskell libraries often use universal types like:
 \begin{lstlisting}[language=Haskell]
   forall a. Rep a => a -> String
 \end{lstlisting}
 Representing such types in Scala is a bit more complicated. We cannot use
-functions -- even generic ones -- as objects of such a type, because the Scala
+functions -- even generic ones, because the Scala
 compiler wants to bind the \cd{a} type as soon as we pass the function to
 another function.
 
@@ -194,7 +194,7 @@ order function.
 So, first of all, in order to encode the a function of type \cd{forall a. Rep[a] => a -> b}
 in Scala, we encode it as an object with an apply method containing the actual
 function.
-\begin{lstlisting}[float=ht,caption=Encoding an existential function]
+\begin{lstlisting}[float=ht,caption=Encoding a universal function]
   object myfunction {
     def apply[A: Rep](a: A) : b = ...
   }
