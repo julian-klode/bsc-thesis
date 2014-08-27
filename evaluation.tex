@@ -68,3 +68,27 @@ As we can see in in table~\ref{bench}, all tested libraries perform roughly
 the same time-wise.
 
 \section{Final remarks}
+By using Scala language features we solved the issues that made LIGD inferior to
+other libraries in Haskell. This, together with the ease of use, makes it one
+of the best libraries for generic programming in Scala. Strangely, it also
+performs better than EMGM, which has not been the case in Haskell according
+to gpbench \cite{DBLP:conf/haskell/RodriguezJJGKO08}. With some work, instances
+of \cd{Rep} could probably even be generated automatically using macros. \todo{Explain!}
+
+Shapeless is easiest to use currently, apart from higher-order functions,
+mainly because there is no need to write any sort of instances for new types
+and because the combinator-based approach leads to short code. It is, however,
+difficult to debug code using Shapeless due to the non-straightforward
+implementation.
+
+Uniplate only solves a subset of the problems the other libraries solve, but
+for those cases, provides a good option. It is, however, not suitable for
+generic generic programming.
+
+EMGM provides about the same features as LIGD, but suffers from complexity. It
+allows for (forces) functions to be specified on subuniverses only; this can be
+seen as an advantage, although it only seems to lead to more boilerplate instances.
+
+In summary, LIGD and Shapeless are probably the best options for generic
+programming in Scala right now. With some work, LIGD would probably be even
+better.
