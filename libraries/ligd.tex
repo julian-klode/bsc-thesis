@@ -1,6 +1,6 @@
 \section{LIGD -- Translation of LIGD}
 \summary{The straight-forward solution to most problems}
-\lstinputlisting[firstline=53,lastline=68,float=ht,caption=LIGD Basics,label=ligd-base]{scala/src/ligd.scala}
+\lstinputlisting[firstline=52,lastline=67,float=ht,caption=LIGD Basics,label=ligd-base]{scala/src/ligd.scala}
 
 LIGD is a simple library that provides a \cd{Rep} trait that describes
 the structure of a type using sums, products, and scalar values.
@@ -39,7 +39,7 @@ This is very easy, but looks inconsistent in usage. Another approach is to
 not use a case class and provide a companion object with custom \cd{apply}
 and \cd{unapply} methods. Listing~\ref{ligd-rtype} shows how this is
 implemented.
-\lstinputlisting[firstline=76,lastline=89,float=ht,caption=Implementation of RType,label=ligd-rtype]{scala/src/ligd.scala}
+\lstinputlisting[firstline=75,lastline=88,float=ht,caption=Implementation of RType,label=ligd-rtype]{scala/src/ligd.scala}
 
 \begin{example}[Lists]
 In order to represent a list, we encode the
@@ -48,9 +48,9 @@ as: \cd{Either[Unit, (A, List[A])]}. In order to do this, we need functions
 that convert from \cd{List[A]} to \cd{Either[Unit, (A, List[A])]} and
 vice versa. An implementation of those functions is given in figure~\ref{ligd-rlist}.
 %-- We can then define an RType instance as:
-%\lstinputlisting[firstline=103,lastline=107]{scala/src/ligd.scala}
+%\lstinputlisting[firstline=102,lastline=106]{scala/src/ligd.scala}
 
-\lstinputlisting[firstline=95,lastline=116,float=ht,caption=Implementation of rList,label=ligd-rlist]{scala/src/ligd.scala}
+\lstinputlisting[firstline=94,lastline=115,float=ht,caption=Implementation of rList,label=ligd-rlist]{scala/src/ligd.scala}
 
 Note how the first parameter of \cd{RType} is recursive.
 \end{example}
