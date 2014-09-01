@@ -45,15 +45,18 @@ Now consider that we want to treat lists specially, that is, create an
 ad-hoc case of \cd{geq} that handles lists directly, instead of as a
 sum of products representations. That is, we need a subclass of Generic
 that can work on lists, something like:
-\lstinputlisting[firstline=240,lastline=242,label=src:emgm:GenericList,caption=Generic with ad-hoc list case]{scala/src/emgm.scala}
+\lstinputlisting[firstline=238,lastline=240,label=src:emgm:GenericList,caption=Generic with ad-hoc list case]{scala/src/emgm.scala}
 Note that the special case for lists defers to the sum of product variant
 if it is not handled by the generic function. We can thus use that extra
 method (override it) or ignore it (and treat it using sums and products).
-\lstinputlisting[firstline=253,lastline=270,float=ht,label=src:emgm:GEqList,caption=Generic equality specialised to lists]{scala/src/emgm.scala}
+\lstinputlisting[firstline=251,lastline=268,float=ht,label=src:emgm:GEqList,caption=Generic equality specialised to lists]{scala/src/emgm.scala}
 
 What we are still missing is a sort of dispatcher, like \cd{Rep} in Generics
-for the masses. Without such a dispatcher, using generic functions like
-\cd{GEqList} would not be easy. \todo{Add GRep}
+for the masses, but this time, \cd{rep} should not be parameterized over \cd{G},
+rather the type itself should be -- the resulting \cd{GRep} trait defines a
+representation of a type for a specific generic function, rather than for all
+generic functions.
+\lstinputlisting[firstline=200,lastline=202,label=src:emgm:GRep,caption=The \cd{GRep} dispatcher]{scala/src/emgm.scala}
 
 \subsection{Comparison to LIGD}
 \todo{Add comparison}
