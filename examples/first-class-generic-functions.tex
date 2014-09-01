@@ -15,9 +15,9 @@ gshow :: forall a. Rep a -> a -> String
 
 Using the encoding of universal types shown in section~\ref{universal-types},
 we can encode our gshow function as an object with an apply method:
-\lstinputlisting[firstline=255,lastline=271,label=src:ligd:Returning,caption=gshow in LIGD]{scala/src/ligd.scala}
+\lstinputlisting[firstline=249,lastline=265,label=src:ligd:Returning,caption=gshow in LIGD]{scala/src/ligd.scala}
 We can now define another function accepting generic functions, for example, \cd{gmapQ}:
-\lstinputlisting[firstline=280,lastline=286,label=src:ligd:Returning,caption=gshow in LIGD]{scala/src/ligd.scala}
+\lstinputlisting[firstline=274,lastline=280,label=src:ligd:Returning,caption=gshow in LIGD]{scala/src/ligd.scala}
 
 Note that if we encode the function as a class and an object extending that
 class as shown in section~\ref{lidg-extensible}, we can even extend the
