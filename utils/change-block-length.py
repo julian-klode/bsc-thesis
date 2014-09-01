@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # change-block-length.py - Adjust lstinputlisting to block length changes
 #
@@ -22,9 +22,13 @@ import sys
 FILE = sys.argv[1]
 FIRST = re.compile(r"\\lstinputlisting\[(.*)firstline=([0-9]+)(.*)\]{%s}" %  FILE)
 LAST = re.compile(r"\\lstinputlisting\[(.*)lastline=([0-9]+)(.*)\]{%s}" % FILE)
-START = int(sys.argv[2])
-END   = (int(sys.argv[3]), int(sys.argv[4]))
-DIFF = (END[1] - END[0])
+try:
+    START = int(sys.argv[2])
+    END   = (int(sys.argv[3]), int(sys.argv[4]))
+    DIFF = (END[1] - END[0])
+except:
+    print("Usage: %s <SOURCE FILE> <START OF BLOCK> <OLD END OF BLOCK> <NEW END> <FILES ...>", file=sys.stderr)
+    sys.exit(1)
 
 def sub_first(match):
     if int(match.group(2)) > END[0]:
