@@ -134,11 +134,11 @@ implement simple variants of generic operations that look for objects
 of a specific type in another object.
 
 
-When representing generic types such as Lists, we can create a subclass
-of RType with parameters representing the generic arguments. We can then
+When representing parameterized types such as Lists, we can create a subclass
+of RType with Rep parameters for the parameters of the type. We can then
 define a custom \cd{equals()} method, as seen in listing~\ref{rmycustomtype}.
 
-\begin{lstlisting}[float,caption=Representing custom generic types,label=rmycustomtype]
+\begin{lstlisting}[float,caption=Representing custom parameterized types,label=rmycustomtype]
   class RMyCustomType[T1, ...](r1: Rep[T1], ...) {
     override def equals(b: Any) : Boolean = b match {
       case RMyCustomType(r1, ...) => r1 == this.r1 &&
