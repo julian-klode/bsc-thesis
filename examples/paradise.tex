@@ -21,26 +21,32 @@ Given the data structures above and our implementation of LIGD that supports
 subtyping \cd{RType}, implementing both operations is fairly straight forward.
 
 First of all, the type representations. For the data types \cd{Person},
-\cd{Employee}, and \cd{Company}, we can use the simplest form of definition,
+\cd{Employee}, and we can use the simplest form of definition,
 by using the \cd{rType} function we added to our LIGD implementation.
 
-\lstinputlisting[firstline=29,lastline=31,float=ht,caption=Person\, Employee\, Company representation in LIGD,label=src:ligd-company:stuff]{scala/src/ligd-company.scala}
+\lstinputlisting[firstline=29,lastline=30,frame=t,caption={Person, Employee, and Company representations in LIGD},label=src:ligd-company:stuff]{scala/src/ligd-company.scala}
+\lstinputlisting[firstline=46,lastline=46,frame=b]{scala/src/ligd-company.scala}
 
 Because we want to query and transform salaries, we need to treat salaries
 specially, so we can pattern match on it (otherwise we would need to compare,
 but pattern matching is easier to read):
 
-\lstinputlisting[firstline=24,lastline=26,float=ht,caption=Salary representation in LIGD,label=src:ligd-company:salary]{scala/src/ligd-company.scala}
+\lstinputlisting[firstline=24,lastline=26,caption=Salary representation in LIGD,label=src:ligd-company:salary]{scala/src/ligd-company.scala}
 
-Finally, the \cd{DUnit} and \cd{Dept} types are mutually recursive. We would
-like to use \cd{rType} here as well, so the compiler automatically infers more
-stuff, but that implicitness breaks laziness and thus cause an endless
-recursion. We can preserve laziness by using the \cd{RType} constructor instead
-of our short-hand \cd{rType} function and specifying the (recursive) first
-parameter manually \footnote{We could even use the \cd{rep} function we added to
-LIGD here, but that would decrease readability}.
+Finally, the \cd{DUnit} and \cd{Dept} types are mutually recursive. Simply
+using \cd{rType} here as we have done for the other types would not work due
+to two reasons: First, the Scala compiler would not be able to infer the types;
+and second, because the implicit \cd{Rep} of \cd{rType} is not lazy, there would
+be either endless recursion (if both were defined using \cd{def}) or \cd{rDept}
+would be \cd{null} in the definition of \cd{rDUnit} because \cd{rDept} is defined
+after \cd{rDUnit} and thus not yet initialized.
 
-\lstinputlisting[firstline=34,lastline=43,float=ht,caption=Mutually recursive representations,label=src:ligd-company:mutual]{scala/src/ligd-company.scala}
+Fixing this is simple: For the first issue, we explicitly specify the types of
+the representations. For the second issue, we can simply define \cd{rDUnit} in
+terms of \cd{RType} instead of \cd{rType}. This makes the reference to \cd{rDept}
+lazy and thus allows it to be used here.
+
+\lstinputlisting[firstline=34,lastline=43,caption=Mutually recursive representations,label=src:ligd-company:mutual]{scala/src/ligd-company.scala}
 
 \begin{example}[Query: Summing all salaries]
 
@@ -48,12 +54,12 @@ Querying salaries is relatively straight forward. Pattern match on all standard
 LIGD types, and recursive for the product, sum, RType types; but before matching
 against \cd{RType} match against \cd{RSalary}:
 
-\lstinputlisting[firstline=46,lastline=55,caption=Summing salaries in LIGD (manually),label=src:ligd-company:sumSalaryOld]{scala/src/ligd-company.scala}
+\lstinputlisting[firstline=49,lastline=59,caption=Summing salaries in LIGD (manually),label=src:ligd-company:sumSalaryOld]{scala/src/ligd-company.scala}
 
 We can however also use the generic fold we implemented earlier, the definition
 becomes a single line of code then:
 
-\lstinputlisting[firstline=67,lastline=67,caption=Summing salaries in LIGD (fold),label=src:ligd-company:sumSalary]{scala/src/ligd-company.scala}
+\lstinputlisting[firstline=70,lastline=70,caption=Summing salaries in LIGD (fold),label=src:ligd-company:sumSalary]{scala/src/ligd-company.scala}
 
 Note: If we swapped around the first two parameters of \cd{gfoldl} we would not even
 need to specify the \cd{Float} type, as long as we would pass \cd{0.0} instead
@@ -66,11 +72,11 @@ of 0.
 Increasing the salaries by 10\% is what is usually called the paradise
 benchmark. Implementing this is straight forward as well in LIGD:
 
-\lstinputlisting[firstline=58,lastline=65,caption=Increase the salaries in LIGD,label=src:ligd-company:sumSalary]{scala/src/ligd-company.scala}
+\lstinputlisting[firstline=61,lastline=68,caption=Increase the salaries in LIGD,label=src:ligd-company:sumSalary]{scala/src/ligd-company.scala}
 
-You can abstract this by building an \cd{everywhere} function\footnote{a sample implementation of \cd{everywhere} is included in the source code} that applies
-a transformation function, similar to EMGM and Uniplates \cd{transformBi} -- then
-you can just call everywhere with a salary-transforming function on your company,
+We can abstract this by building an \cd{everywhere} function\footnote{a sample implementation of \cd{everywhere} is included in the source code} that applies
+a transformation function, similar to EMGM and Uniplates \cd{transformBi} -- and
+then calling it with a salary-transforming function on our company,
 like this:
 \begin{lstlisting}[caption=Increase the salaries using \cd{everywhere}]
   everywhere((i: Salary) ⇒ Salary(i.salary * 1.1F))(genCom)
@@ -78,8 +84,7 @@ like this:
 
 \end{example}
 
-In any case, both examples are straight forward to implement. It cannot get
-much better.
+In any case, both examples are easy to implement.
 
 
 \subsection{EMGM}
