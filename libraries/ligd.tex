@@ -116,9 +116,9 @@ This approach using classes is not applicable to Haskell, but it is possible
 to do something similar - by passing the function as an argument:
 \begin{enumerate}
   \item Convert \cd{geq :: Rep[a] -> a -> a -> Bool} to \\
-        \hphantom{Convert }\cd{geq\_ :: Rep[a] -> a -> a -> (forall a. Rep[a] -> a -> a -> Bool) -> Bool} \\
+        \hphantom{Convert }\cd{geq' :: Rep[a] -> a -> a -> (forall a. Rep[a] -> a -> a -> Bool) -> Bool} \\
         and change self-recursive calls to call the new argument
-  \item Add a  \cd{geq rep a b = geq\_ rep a b geq}
+  \item Add a  \cd{geq rep a b = geq' rep a b geq}
 \end{enumerate}
 
 Extending the function should now be straight forward. It is less useful to
