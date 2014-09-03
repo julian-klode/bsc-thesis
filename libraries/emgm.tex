@@ -11,6 +11,13 @@ supported, our slightly extended version can be seen in Figure~\ref{src:emgm:Gen
 The parameter \cd{G} refers to a type constructor for a type that stores
 a function of a specific type.
 
+In addition to the cases known from LIGD, this also introduces a \cd{constr}
+case for representing named constructors of a certain arrity. The default
+implementation of \cd{constr} will just return the underlying \cd{G[A]} and
+ignore the name and arrity, but functions are free to override it -- for example,
+a generic show function might use this to pretty print data types.
+
+\clearpage
 \begin{example}[Generic equality]
 Imagine we want to check arbitrary objects of the same type for equality.
 Our type \cd{G[\_]} must have a function that accepts two
@@ -25,9 +32,10 @@ compiler infer the types automatically, as explained in Section~\ref{type-infere
 Being able to represent generic functions is only half of the work, though
 -- we still need a way to represent objects. Instead of converting objects
 to a representation of sums and products, we simply call the members of
-the \cd{Generic} instance we need.
+the \cd{Generic} instance we need. Some of the instances of such a \cd{Rep}
+trait are shown in listing~\ref{src:emgm:Rep}.
 
-\lstinputlisting[firstline=58,lastline=82,float=ht,label=src:emgm:Rep,caption=The \cd{Rep} trait in GM]{scala/src/emgm.scala}
+\lstinputlisting[firstline=58,lastline=70,label=src:emgm:Rep,caption=The \cd{Rep} trait in GM and some instances]{scala/src/emgm.scala}
 
 We can now, similar to  LIGD, represent arbitrary types as sums of products.
 Recall the list example from LIGD.
@@ -49,6 +57,9 @@ that can work on lists, something like:
 Note that the special case for lists defers to the sum of product variant
 if it is not handled by the generic function. We can thus use that extra
 method (override it) or ignore it (and treat it using sums and products).
+
+An example for using it would be a generic equality function with an optimized
+version for lists, like figure~\ref{src:emgm:GEqList} shows.
 \lstinputlisting[firstline=251,lastline=268,float=ht,label=src:emgm:GEqList,caption=Generic equality specialised to lists]{scala/src/emgm.scala}
 
 What we are still missing is a sort of dispatcher, like \cd{Rep} in Generics
@@ -58,6 +69,28 @@ representation of a type for a specific generic function, rather than for all
 generic functions.
 \lstinputlisting[firstline=200,lastline=202,label=src:emgm:GRep,caption=The \cd{GRep} dispatcher]{scala/src/emgm.scala}
 
+The instances of \cd{GRep} are basically the same as those of \cd{Rep}, except
+that they capture the \cd{Generic[G]} in the constructor, rather than the
+method.
+
+\lstinputlisting[firstline=232,lastline=235,label=src:emgm:GRProd,caption=Example of a \cd{GRep} instance: \cd{GRProd}]{scala/src/emgm.scala}
+
+We can now add a representation for our special case of lists:
+
+\lstinputlisting[firstline=243,lastline=246,label=src:emgm:GRList,caption=Example of a \cd{GRep} instance: \cd{GRList}]{scala/src/emgm.scala}
+
+Unlike the other instances of \cd{GRep}, this one does not take a \cd{Generic[G]},
+but rather a \cd{GenericList[G]}. This means that functions will only work on
+lists if they extend \cd{GenericList}. This is easy to do, though: Because
+\cd{GenericList} provides a default implementation of \cd{list} that defers to
+the view of sum of products, an empty declaration is sufficient. For example,
+instead of the special case for lists in \cd{GEqList}, we could just use:
+\begin{lstlisting}
+    implicit object GEqList extends MyGEq with GenericList[GEq]
+\end{lstlisting}
+to extend the universe of geq to lists -- there is no need to actually use any
+of the special cases.
+
 \subsection{Comparison to LIGD}
+
 \todo{Add comparison}
-\todo{Format}
