@@ -36,6 +36,9 @@ def apply_hunk(fname, start, end_old, end_new):
     first = REGEX % ("(.*)", "firstline", "([0-9]+)", "(.*)", fname)
     last = REGEX % ("(.*)", "lastline", "([0-9]+)", "(.*)", fname)
 
+    if end_old == end_new:
+        return
+
     def sub_first(match):
         if int(match.group(2)) > start  and int(match.group(2)) < end_old:
             print("Warning: Line %s might need manual change" % match.group(0))
