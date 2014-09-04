@@ -37,6 +37,8 @@ def apply_hunk(fname, start, end_old, end_new):
     last = REGEX % ("(.*)", "lastline", "([0-9]+)", "(.*)", fname)
 
     def sub_first(match):
+        if int(match.group(2)) > start  and int(match.group(2)) < end_old:
+            print("Warning: Line %s might need manual change" % match.group(0))
         if int(match.group(2)) > end_old:
             return QUERY % (match.group(1), "firstline",
                             int(match.group(2)) + diff, match.group(3), fname)
@@ -44,6 +46,8 @@ def apply_hunk(fname, start, end_old, end_new):
         return match.group(0)
 
     def sub_last(match):
+        if int(match.group(2)) > start  and int(match.group(2)) < end_old:
+            print("Warning: Line %s might need manual change" % match.group(0))
         if int(match.group(2)) > end_old:
             return QUERY % (match.group(1), "lastline",
                             int(match.group(2)) + diff, match.group(3), fname)
@@ -87,7 +91,7 @@ def main_git():
         to = []
     else:
         to = [to]
-    proc = subprocess.Popen(["git", "-C", "scala", "diff", frm] + to,
+    proc = subprocess.Popen(["git", "-C", "scala", "diff", "-U1", frm] + to,
                             stdout=subprocess.PIPE)
     diff = proc.communicate()[0].decode()
     fname = None
