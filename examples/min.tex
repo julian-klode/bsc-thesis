@@ -25,4 +25,8 @@ simply pick the minimum. As a special bonus, this only works on data structures
 than can contain integers, because the \cd{Biplate} has \cd{Int} as a second
 parameter.
 \paragraph{Shapeless}
-\todo{add shapeless min}
+Getting the minimum in shapeless works by using \cd{everything}. In the example
+below, \cd{intmax} returns the maximum integer for non-integer values and the
+integer for an integer value. The \cd{minimum} object than combines two integers
+(it also does \cd{long}, \cd{float}, \cd{double}) using \cd{scala.math.min}.
+\lstinputlisting[firstline=59,lastline=69,caption=Minimum in Shapeless,label=src:shapeless:min]{scala/src/shapeless.scala}
