@@ -1,9 +1,11 @@
-\section{LIGD -- Translation of LIGD}
+\section{LIGD$^{+}$}
 \summary{The straight-forward solution to most problems}
 \lstinputlisting[firstline=53,lastline=68,float=ht,caption=LIGD Basics,label=ligd-base]{scala/src/ligd.scala}
 
-LIGD is a simple library that provides a \cd{Rep} trait that describes
-the structure of a type using sums, products, and scalar values.
+LIGD\cite{Cheney:2002:LIG:581690.581698} is a simple library that provides a \cd{Rep} trait that describes
+the structure of a type using sums, products, and scalar values. This
+version of LIGD is more powerful than the original one, though, as we
+will see later.
 
 Listing~\ref{ligd-base} shows the basic \cd{Rep} trait with instances for
 scalar types, sums (represented using \cd{Either}), and products (represented
