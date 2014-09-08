@@ -1,6 +1,5 @@
 \section{Uniplate}
 \summary{Not feasible without macros or code generators and fails generic equality test}
-\todo{Explain how uniplate works}
 
 Uniplate is a library that differentiates between two basic type of
 objects: Uniplates and Biplates. Uniplates are simple recursive types
@@ -8,7 +7,81 @@ like terms or expressions, which form a graph where all inner nodes have
 the same common supertype. Biplates are types that contain other Uniplates,
 for example, a \cd{List a} has a \cd{Biplate List a}.
 
+\subsection{Uniplates}
+The \cd{Uniplate} type class, shown in listing~\ref{src:uniplate:Uniplate}
+describes recursive types like terms and expressions. Its only primitive
+operation is the \cd{uniplate()} method.
 
+\lstinputlisting[firstline=38,lastline=56,label=src:uniplate:Uniplate,caption=The Uniplate type class (and various additional functions)]{scala/src/uniplate.scala}
+
+The \cd{uniplate()} method takes an object of type \cd{T} and returns a tuple
+of all direct children of the same type and a function that constructs a new \cd{T}
+from a list of children of the same type.
+
+
+There are also several more functions that can be defined on top of \cd{uniplate()}.
+
+The \cd{children()} function returns a list of all direct children of the same
+type. For example, in a term, this will be the operands.
+
+The \cd{universe()} function returns a list of all transitive children of the
+same type. For example, in a term, this will be the operands and their children,
+and so on. In a tree, applied to the root, this will be all nodes in the tree.
+
+The \cd{transform()} function defines a bottom up transformation. It applies
+the passed function recursively to all children bottom-up.
+
+\begin{example}[Transformation]
+An example of a bottom-up transformation would be eliminating subtraction in expressions, that
+is transform \cd{a - b} to \cd{a + (-b)}. Given an existing type \cd{Expr}
+and \cd{Add}, \cd{Sub}, \cd{Neg} case classes of it, such a transformation
+could be written as:
+
+\begin{lstlisting}
+    def removeSub(e: Expr) = {
+        case Sub(a, b) => Add(a, Neg(b))
+        case e => e
+    }
+
+    val expressionWithoutSub = transform(removeSub)(expression)
+\end{lstlisting}
+\end{example}
+
+The \cd{descend()} function applies a top-down transformation.
+
+The \cd{rewrite()} function applies a transformation until some sort of
+normal form has been reached. The passed function returns a \cd{Some} if
+it applied a transformation to an object and a \cd{None} if the input was
+in normal form already.
+
+In the original uniplate paper\cite{DBLP:conf/haskell/MitchellR07}, Mitchell
+and Runciman introduce additional functions, but those are not implemented
+in the Scala version, because the focus was on biplates.
+
+\subsection{Biplates}
+Simply speaking, biplates are containers of uniplates. For example, a type
+\cd{Expr} that represents arithmetic expressions over integers has a corresponding
+\cd{Biplate[Expr, Int]}.
+
+\lstinputlisting[firstline=99,lastline=103,label=src:uniplate:Biplate,caption=The Biplate type class (and various additional functions)]{scala/src/uniplate.scala}
+
+The basic operation of a \cd{Biplate} is the \cd{biplate} method. This method
+is similar to the \cd{uniplate} method of the \cd{Uniplate} type class, but now
+works on children of a different type.
+
+The \cd{universeBi} and \cd{transformBi} methods are like their non-bi counterparts
+in \cd{Uniplate}. Outlook: \cd{transformBi} corresponds to the
+\cd{everywhere} combinator of Scrap your Boilerplate\cite{DBLP:conf/tldi/LammelJ03},
+with one caveat: the passed function is not polymorphic.
+
+\begin{example}[Minimum integer]
+A function that calculates the minimum integer in a biplate can be defined
+by folding \cd{scala.math.min} over the universe of the biplate.
+
+\lstinputlisting[firstline=110,lastline=111,label=src:uniplate:minInt,caption=Uniplate minInt]{scala/src/uniplate.scala}
+\end{example}
+
+\subsection{Limitations and Advantages compared to other solutions}
 Uniplate can theoretically be ported from Haskell to Scala, but it is not
 feasible to do without a way to automatically generate instances of the
 \cd{Biplate} type class, because the amount of biplates needed is quadratic
@@ -22,5 +95,6 @@ for Uniplates, defining a generic equality function won't work because we
 only have access to the objects themselves and not to members of a different
 type.
 
-A basic implementation of uniplate can be found in the \cd{uniplate.scala}
-source file in section~\ref{src:uniplate}.
+On the other hand, if Uniplate is applicable it will almost always lead to
+the shortest code compared to other frameworks. See chapter~\ref{libraries}
+for more examples.
