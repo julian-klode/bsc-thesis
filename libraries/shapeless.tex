@@ -1,27 +1,106 @@
-\section{Shapeless -- Scala Implementation of Scrap your Boilerplate}
+\section{Shapeless}
 
-Shapeless is an adaption of Scrap your Boilerplate\cite{DBLP:conf/tldi/LammelJ03}
-from Haskell to Scala. Compared to the Haskell implementation, the Scala
-implementation simplifies some things a bit.
+Shapeless is an already existing Scala library that started as a port of Scrap your
+Boilerplate\cite{DBLP:conf/tldi/LammelJ03} from Haskell. In the mean time however,
+it evolved a bit further and now covers topics like heterogeneous lists and
+zippers, among other things.
 
-Comparing our ports of other libraries against shapeless helps us determine
-whether the solutions are efficient.
+Compared to the LIGD, EMGM, and Shapeless ports, Shapeless is far more
+advanced. It automatically works on custom Scala types without having to
+write instances of any type class; and it also uses several advanced programming
+techniques like dependent types for its implementation. This means that using
+Shapeless is easy, as long as there is no error. Debugging errors on the other
+hand, can be quite complicated.
 
-I found Shapeless to be buggy. Defining a generic function and calling
-it twice in the interpreter resulted in errors:
+\subsection{Polymorphic functions}
+Shapeless provides support for writing polymorphic functions in the
+\cd{shapeless.poly} package.
+
+\begin{example}[Extracting integers]
+  The function \cd{int1} returns a passed integer and 1 (the identity of
+  multiplication) for all other types.
+
+  \lstinputlisting[firstline=52,lastline=57,label=src:shapeless:int1,caption=\cd{int1} -- A polymorphic function of arity 1]{scala/src/shapeless.scala}
+\end{example}
+
+\begin{example}[Lifting a monomorphic function to a polymorphic one]
+  The class \cd{shapeless.poly.->} takes as an argument a monomorphic function
+  and lifts it to a \cd{Poly1} instance. Using it is simple:
+
+  \lstinputlisting[firstline=67,lastline=67]{scala/tests/CompanyTest.scala}
+\end{example}
+
+\begin{example}[Calculating products of numbers]
+  The function \cd{prod} calculates the products of numbers. Given two \cd{Int}
+  objects it produces an \cd{Int}; given two \cd{Float} it produces a \cd{Float};
+  and so on.
+  \lstinputlisting[firstline=52,lastline=57,label=src:shapeless:prod,caption=\cd{prod} -- A polymorphic function of arity 2]{scala/src/shapeless.scala}
+\end{example}
+
+\subsection{The \cd{everything} combinator}
+Shapeless provides a combinator called \cd{everything} for constructing
+queries on objects. This takes two polymorphic functions: The first one
+extracts objects we are interested in, the second one combines those objects
+to a result -- it basically is a fold.
+
+\begin{example}[Calculating the product of all integers in an object]
+  If we combine \cd{int1} and \cd{prod} of the previous sub section we can
+  easily calculate the product of all integers in a data structure (recursively).
+  \lstinputlisting[firstline=73,lastline=73,label=src:shapeless:product,caption=\cd{product} -- Product of all integers in an object]{scala/src/shapeless.scala}
+\end{example}
+
+\subsection{The \cd{everywhere} combinator}
+The \cd{everywhere} combinator implements transformations. It takes a
+polymorphic function and applies that to a data structure, types
+not handled by it will be recursed into.
+
+\begin{example}[Increasing salaries]
+  Applying \cd{everywhere} to the function \cd{incSalary} introduced earlier
+  in that chapter yields a new function that can be applied to any object
+  and will increment all salaries within that object, returning the changed
+  object.
+
+  \begin{lstlisting}
+    scala> everywhere(incSalary)(1)
+    res0: Int = 1
+    scala> everywhere(incSalary)(List(Salary(10f)))
+    res1: List[CompanyData.Salary] = List(Salary(11.0))
+  \end{lstlisting}
+\end{example}
+
+\subsection{Heterogeneous lists (\cd{HList})}
+Heterogeneous lists are like a mixture of tuples and lists, that is, they
+consist of heterogeneous elements and are variable size. Their type encodes
+the length and the type of the elements, and operations like prepending calculate
+the result type through the use of dependent types.
+A heterogeneous list is created by prepending elements to another heterogeneous
+list using the \cd{::} operator. The empty list is the object \cd{HNil}.
+
+\begin{example}[A heterogeneous list] {\ } % force a line
 \begin{lstlisting}
-  scala> def inc(i: Int) = i + 1
-  inc: (i: Int)Int
-
-  scala> everywhere(inc _)(List(1,2,3))
-  res7: List[Int] = List(2, 3, 4)
-
-  scala> everywhere(inc _)(List(1,2,3))
-  java.lang.AbstractMethodError: fresh$macro$6$2$.caseUniv()Lshapeless/PolyDefns$Case;
-    ... 43 elided
+  scala> 1 :: "Hello, world" :: HNil
+  res0: shapeless.::[Int,shapeless.::[String,shapeless.HNil]] = 1 :: Hello, world :: HNil
 \end{lstlisting}
+\end{example}
 
-Furthermore, testing it with a standard paradise benchmark, increasing all
-salaries by 10\% failed as well sometimes, with shapeless only increasing
-some of the values when run under scalatest.
-\todo{Remove this and maybe give a basic overview}
+\subsection{Zippers}
+Shapeless provides an implementation of generic zippers. A generic zipper is
+a data structure that represents a moment in the traversal of another data
+structure like a tree. It has operations like \cd{left}, \cd{right}, \cd{down},
+and \cd{up} for navigating through the object and \cd{get} to get the object
+at the current position.
+
+\begin{example}[Object to zipper]
+Importing \cd{shapeless.syntax.zipper._} adds a toZipper method to objects.
+
+\begin{lstlisting}
+  scala> ((1,1),2,3).toZipper
+  res0 = Zipper(HNil,(1,1) :: 2 :: 3 :: HNil,None)
+  scala> res0.down.get
+  res1: Int = 1
+\end{lstlisting}
+\end{example}
+
+\subsection{Further types and operations}
+Shapeless also provides several additional types and operations, such as
+natural numbers on the type level, heterogeneous maps, and more.
