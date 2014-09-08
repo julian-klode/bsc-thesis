@@ -150,7 +150,14 @@ it is not easy to figure out what shapeless does, debugging issues becomes
 harder.
 
 \begin{example}[Query: Summing all salaries]
-\todo{shapeless sumSalary}
+In shapeless, a query is made using the combinator \cd{everything}.
+
+\lstinputlisting[firstline=76,lastline=84,caption=Summing salaries in Shapeless]{scala/src/shapeless.scala}
+
+The \cd{everything} combinator consists of two parts: A traversal function
+-- here: \cd{extractSalary} -- that extracts the types we are interested in,
+and a function to combine the results from the traversal, such as the
+\cd{addFloat} here.
 \end{example}
 
 \begin{example}[Transformation: Increase all salaries]
