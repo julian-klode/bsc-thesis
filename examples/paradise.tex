@@ -105,23 +105,13 @@ Now we need some boilerplate to have implicit \cd{GRep} instances:
 
 \begin{example}[Query: Summing all salaries]
 Summing all salaries works as expected by using a very simple definition:
-\lstinputlisting[firstline=86,lastline=103,caption=Summing salaries in EMGM,label=src:emgm-company:sumSalary]{scala/src/emgm-company.scala}
+\lstinputlisting[firstline=99,lastline=116,caption=Summing salaries in EMGM,label=src:emgm-company:sumSalary]{scala/src/emgm-company.scala}
 \end{example}
 
 \begin{example}[Transformation: Increase all salaries]
-It's straight-forward to do this manually. We split it though, and first look
-at transforming things in general and then at specializing this for the Salary
-case, as that avoids the same boilerplate for other cases of transformations.
-
-We consider a basic transformation as a function of type \cd{A => A}. In EMGM,
-we can encode this pattern as:
-\lstinputlisting[firstline=272,lastline=288,caption=Basic transform pattern,label=src:emgm:GTransform]{scala/src/emgm.scala}
-
-We can now simply extend that trait, as listing~\ref{src:emgm-company:incSalary} shows.
-\lstinputlisting[firstline=78,lastline=83,caption=Using the transform pattern: Increase salary,label=src:emgm-company:incSalary]{scala/src/emgm-company.scala}
-
-This breaks though if you want to have any other transformation than the Salary
-one, because Scala would not be able to infer the correct \cd{GRep}.
+It's straight forward to implement this in EMGM, although the definition is
+very verbose.
+\lstinputlisting[firstline=78,lastline=96,caption=Using the transform pattern: Increase salary,label=src:emgm-company:incSalary]{scala/src/emgm-company.scala}
 \end{example}
 
 \subsection{Uniplate}
