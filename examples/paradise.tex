@@ -127,7 +127,11 @@ very verbose.
 \end{example}
 
 \begin{example}[Transformation: Increase all salaries]
-\todo{uniplate incSalary}
+ A transformation is done using \cd{transformBi} which takes a function of
+ type \cd{A => A} and applies it to a value of a type \cd{B} using a \cd{Biplate[B,A]}.
+\begin{lstlisting}
+  transformBi((i: Salary) ⇒ Salary(i.salary * 1.1F))(genCom)
+\end{lstlisting}
 \end{example}
 
 
