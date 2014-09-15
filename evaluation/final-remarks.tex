@@ -1,25 +1,28 @@
 \section{Final remarks}
-By using Scala language features we solved the issues that made LIGD inferior to
-other libraries in Haskell. This, together with the ease of use, makes it one
-of the best libraries for generic programming in Scala. Strangely, it also
-performs better than EMGM, which has not been the case in Haskell according
-to gpbench \cite{DBLP:conf/haskell/RodriguezJJGKO08}. With some work, instances
-of \cd{Rep} could probably even be generated automatically using macros. \todo{Explain!}
+Shapeless and LIGD are the best options for generic programming in Scala
+right now. Shapeless provides a much larger feature set, and is also more
+widely used, and should thus be preferred in production use.
 
-Shapeless is easiest to use currently, apart from higher-order functions,
-mainly because there is no need to write any sort of instances for new types
-and because the combinator-based approach leads to short code. It is, however,
-difficult to debug code using Shapeless due to the non-straightforward
-implementation.
+The extended LIGD is now capable of supporting ad-hoc cases and extensibility,
+making it more powerful then the original implementation in Haskell. Its use
+of only basic language features and its easy to write representations and
+functions make it an optimal choice for introducing generic programming to
+students.
 
-Uniplate only solves a subset of the problems the other libraries solve, but
-for those cases, provides a good option. It is, however, not suitable for
-generic generic programming.
+It would be interesting to look at automatic generation of LIGD representations
+used macros; likewise, an implementation that represents constructors using
+heterogeneous lists also seems a worthwhile idea, opening up new possibilities
+like generic zippers. While an initial prototype of such a library exists in
+the source code of this bachelor thesis\footnote{See \texttt{src/hligd.scala} and
+\texttt{src/hlists.scala}}, it requires more work to make it work completely.
 
-EMGM provides about the same features as LIGD, but suffers from complexity. It
-allows for (forces) functions to be specified on subuniverses only; this can be
-seen as an advantage, although it only seems to lead to more boilerplate instances.
+Another topic to look at with regards to LIGD is the handling of lists and
+other container types: Representing them as deeply-nested pairs can cause
+stack overflows when implementing algorithms in a naive way. Adding direct
+support for sequences and/or implementing a set of combinators representing
+commonly-needed operations using trampolines might be worthwhile.
 
-In summary, LIGD and Shapeless are probably the best options for generic
-programming in Scala right now. With some work, LIGD would probably be even
-better.
+Note that it is not possible to write simple tail-recursive generic functions in Scala,
+because Scala considers the same function with different type parameters
+to be a different function and will thus not be able to optimize those
+tail-recursive calls into loops; requiring the use of trampolines instead.
