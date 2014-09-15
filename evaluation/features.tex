@@ -1,15 +1,15 @@
 \section{Library overview}
 \begin{table}[ht]
-  \begin{tabular}{c|llll}
-    Feature (and test)    & LIGD & EMGM & Uniplate & Shapeless \\
+  \begin{tabular}{l|llll}
+       & LIGD & EMGM & Uniplate & Shapeless \\
                  \hline
-    Ad-hoc cases (company) & \checkmark$^{+}$ & $\checkmark$ & \checkmark & \checkmark \\
-    Multi-parameter functions (geq) & \checkmark & \checkmark & ($\times$) & \checkmark{} \\
-    Extensibility & \checkmark $^{+}$ & $\circ$ & ($\times$) & ($\times$) \\
-    First-class generics & \checkmark & $\circ$ & $\circ$ & (\checkmark)
+    Ad-hoc cases & \checkmark$^{+}$ & $\checkmark$ & \checkmark & \checkmark \\
+    Multi-parameter functions & \checkmark & \checkmark & ($\times$) & \checkmark{} \\
+    Extensibility & \checkmark $^{+}$ & $\circ$ & $\times$ & $\circ$ \\
+    First-class generics & \checkmark & $\circ$ & $\circ$ & \checkmark \\ \hline
+    Automatic representations & $\times$ & $\times$ & ($\checkmark$) & \checkmark \\
+    Ease of use & \checkmark & $\circ$ & \checkmark & $\circ$
   \end{tabular}
-
-
 \begin{center}
 \textbf{Legend:}\\
 \begin{tabular}{llllll}
@@ -18,11 +18,15 @@ $^{+}$ & Not in Haskell & $()$ & Only tested in Haskell \\
 \end{tabular}
 \end{center}
 
-  \caption{Feature overview}
+  \label{library-diffs}
+  \caption{Differences between the libraries}
 \end{table}
 
-The tested libraries support different sets of features. Of the tested libraries,
-LIGD and EMGM were the most powerful, and LIGD was the easiest to write for.
+The tested libraries support different sets of features. Table~\ref{library-diffs}
+gives an overview of the differences. There are some more features that were
+tested with the Haskell versions in GPBench\cite{DBLP:conf/haskell/RodriguezJJGKO08},
+but as they are supported by all of the libraries tested here, they are not
+listed.
 
 \paragraph{Ad-hoc cases}
 All tested libraries support ad-hoc cases. In LIGD, only the Scala version
@@ -37,7 +41,18 @@ have a specific type.
 \paragraph{Extensibility}
 With the class encoding of functions, LIGD supports
 extensibility. EMGM supports extensibility out of the box, but is more verbose
-to write than LIGD. \todo{Extensibility in Uniplate/Shapeless}
+to write than LIGD. Generic functions in Uniplate are not extensible, mostly
+because they are just short functions based on combinators. In Shapeless, the
+situation is similar, but there is one difference: The polymorphic functions
+can be extended, allowing new ad-hoc cases to some extent: Some parts, like
+the code that applies that function using a combinator needs to be changed to
+include the new combinator.
+
+\begin{example}[Extensibility in Shapeless]
+    Given a polymorphic function \cd{incS <: Poly1}, another function
+    \cd{incS2 <: Poly} can be created by making the \cd{default} method
+    call \cd{incS} and providing additional or replacement cases.
+\end{example}
 
 \paragraph{First class generic functions}
 LIGD does not directly first class generic functions, they can be encoded as
@@ -45,4 +60,33 @@ objects with an apply method however. This is a limitation of the Scala
 language, not a limitation of LIGD itself. See section~\ref{universal-types}
 for a discussion on the issue. EMGM supports first class generics to some
 extend, but is complicated. Uniplate does not support a really useful form
-of first class generics. \todo{First class generic functions in Shapeless}
+of first class generics. Shapeless supports first-class polymorphic functions
+with a default case which is equally powerful as the EMGM and LIGD cases.
+
+\paragraph{Automatic representations}
+Only shapeless supports automatic representations. It should be possible to
+automatically generate automatic representations for Uniplate using Shapeless,
+just like they can be generated in Haskell from \cd{Data} and \cd{Typeable}
+instances, but this would require further investigation. It is also the slowest
+form of instances Uniplate supports.
+
+LIGD and EMGM have not been shown to support automatic generation of
+representations yet. It might be possible to implement it using Scala
+macros, but this requires further investigation as well.
+
+\paragraph{Ease of use}
+LIGD and Uniplate are very easy to learn and use: One is based on basic
+pattern matching over representations and the other uses simple combinators
+with monomorphic functions, both of which do not require the knowledge of
+more advanced language features or library implementation details; even
+when debugging.
+
+EMGM is slightly less easy to use than LIGD. First of all, it requires more
+code to achieve the same result; secondly, functions need to be extended to
+sub-universes; and thirdly, writing the generic function in a visitor-like
+way is more complicated, at least in my opinion.
+
+Shapeless is very easy to use once the basics are understood. But Shapeless
+also provides more complex features and makes use of more advanced language
+features; this often leads to error messages that are hard to understand,
+making debugging a painful experience compared to all of the other libraries.
