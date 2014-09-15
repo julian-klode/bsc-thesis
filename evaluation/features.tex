@@ -1,0 +1,48 @@
+\section{Library overview}
+\begin{table}[ht]
+  \begin{tabular}{c|llll}
+    Feature (and test)    & LIGD & EMGM & Uniplate & Shapeless \\
+                 \hline
+    Ad-hoc cases (company) & \checkmark$^{+}$ & $\checkmark$ & \checkmark & \checkmark \\
+    Multi-parameter functions (geq) & \checkmark & \checkmark & ($\times$) & \checkmark{} \\
+    Extensibility & \checkmark $^{+}$ & $\circ$ & ($\times$) & ($\times$) \\
+    First-class generics & \checkmark & $\circ$ & $\circ$ & (\checkmark)
+  \end{tabular}
+
+
+\begin{center}
+\textbf{Legend:}\\
+\begin{tabular}{llllll}
+$\checkmark$ & Well supported & $\circ$ & Supported, but needs effort & $\times$ & Not supported \\
+$^{+}$ & Not in Haskell & $()$ & Only tested in Haskell \\
+\end{tabular}
+\end{center}
+
+  \caption{Feature overview}
+\end{table}
+
+The tested libraries support different sets of features. Of the tested libraries,
+LIGD and EMGM were the most powerful, and LIGD was the easiest to write for.
+
+\paragraph{Ad-hoc cases}
+All tested libraries support ad-hoc cases. In LIGD, only the Scala version
+supports ad-hoc cases, due to the availability of sub-typing.
+
+\paragraph{Multi-parameter functions}
+Except for uniplate, all libraries support functions with multiple generic
+arguments. Uniplate only has limited support for this, not sufficient to
+implement generic equality, because it only looks at parts of objects that
+have a specific type.
+
+\paragraph{Extensibility}
+With the class encoding of functions, LIGD supports
+extensibility. EMGM supports extensibility out of the box, but is more verbose
+to write than LIGD. \todo{Extensibility in Uniplate/Shapeless}
+
+\paragraph{First class generic functions}
+LIGD does not directly first class generic functions, they can be encoded as
+objects with an apply method however. This is a limitation of the Scala
+language, not a limitation of LIGD itself. See section~\ref{universal-types}
+for a discussion on the issue. EMGM supports first class generics to some
+extend, but is complicated. Uniplate does not support a really useful form
+of first class generics. \todo{First class generic functions in Shapeless}
