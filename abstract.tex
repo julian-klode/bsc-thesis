@@ -4,28 +4,34 @@
 \let
 \selectlanguage{ngerman}
 \begin{abstract}
+Generische Programmierung ist eine Vorgehensweise, die es ermöglicht, Funktionen
+über die Struktur eines Datentypes zu definieren, anstelle von eines spezifischen
+Datentypes. Dies erlaubt es einer Funktion auf beliebigen Datentypen zu operieren,
+selbst auf solchen, die dem Programmier der Funktion noch nicht bekannt waren.
 
+In dieser Bachelorarbeit werde ich Portierungen von drei Haskell Bibliotheken
+(LIGD, EMGM, Uniplate) nach Scala vorstellen und ihre Funktionalität und Geschwindigkeit miteinander
+sowie mit Shapeless vergleichen.
 
-Platz für die deutsche Zusammenfassung...\todo{Noch zu tun}
+Ich werde außerdem zeigen, dass LIGD in Scala erweitert werden kann, sodass sie
+beinahe so mächtig wie EMGM ist, indem ich das Problem der Erweiterbarkeit
+von Funktionen löse, welches bisherige Implementierungen stark beeinträchtige.
 \end{abstract}
 \selectlanguage{english}
 \begin{abstract}
-I will start with a short introduction to datatype-generic programming,
-including a short explanation of how various things are implemented in
-Haskell.
+Generic programming is a technique that allows functions to be defined over
+the shape of an type, rather than a specific type; thus allowing one function
+to be used on objects of arbitrary types, even those that were not known to
+the programmer of the function.
 
-I will show how the Haskell approaches can be implemented in Scala, based
-on Scala for Generic Programmers and investigate existing generic programming
-tools in Scala.
+In this thesis, I will present ports of three Haskell libraries (LIGD, EMGM, Uniplate) to Scala,
+and compare their features and performance against each other and
+against shapeless, a native Scala library.
 
-I will implement various operations generically in Scala using different
-approaches and compare the approaches with each other in order to
-determine the trade-offs between performance and interface design.
+I will show that LIGD in Scala can be extended to be almost as powerful as EMGM;
+solving the issue with extensibility and that made it vastly inferior in previous
+implementations.
 
-For this, I will look at name binding operations, derived data types
-such as pattern functors, zippers; and at some exemplary operations
-from the Haskell GPBench suite, like increasing salaries in the company
-data type or finding the minimum integer in a data type.
-\todo{Replace with a real abstract}
+
 \end{abstract}
 \endgroup
