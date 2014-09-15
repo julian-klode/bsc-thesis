@@ -21,8 +21,3 @@ other container types: Representing them as deeply-nested pairs can cause
 stack overflows when implementing algorithms in a naive way. Adding direct
 support for sequences and/or implementing a set of combinators representing
 commonly-needed operations using trampolines might be worthwhile.
-
-Note that it is not possible to write simple tail-recursive generic functions in Scala,
-because Scala considers the same function with different type parameters
-to be a different function and will thus not be able to optimize those
-tail-recursive calls into loops; requiring the use of trampolines instead.

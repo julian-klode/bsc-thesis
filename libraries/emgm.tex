@@ -17,7 +17,6 @@ implementation of \cd{constr} will just return the underlying \cd{G[A]} and
 ignore the name and arrity, but functions are free to override it -- for example,
 a generic show function might use this to pretty print data types.
 
-\clearpage
 \begin{example}[Generic equality]
 Imagine we want to check arbitrary objects of the same type for equality.
 Our type \cd{G[\_]} must have a function that accepts two
@@ -26,7 +25,9 @@ value of the type given by the first parameter, and returns a boolean
 \lstinputlisting[firstline=172,lastline=192,float=ht,label=src:emgm:GEq,caption=A generic equality function in GM]{scala/src/emgm.scala}
 
 We use closures here instead of normal methods in order to have the
-compiler infer the types automatically, as explained in Section~\ref{type-inference}. \qed
+compiler infer the types automatically, as explained in Section~\ref{type-inference}.
+As with LIGD, deeply nested data structures and cycles will cause this
+function to fail. \qed{}
 \end{example}
 
 Being able to represent generic functions is only half of the work, though

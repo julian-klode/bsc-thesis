@@ -55,6 +55,9 @@ vice versa. An implementation of those functions is given in figure~\ref{ligd-rl
 \lstinputlisting[firstline=96,lastline=117,float=ht,caption=Implementation of rList,label=ligd-rlist]{scala/src/ligd.scala}
 
 Note how the first parameter of \cd{RType} is recursive.
+
+There is one issue with this representation though: It leads to deep recursion,
+potentially causing a stack overflow in functions using it.
 \end{example}
 
 \subsection{Writing generic functions}
@@ -67,6 +70,17 @@ Listing~\ref{ligd-geq} shows how to implement a simple function that checks for
 generic equality.
 
   \lstinputlisting[firstline=36,lastline=51,float=ht,caption=Generic Equality in LIGD,label=ligd-geq]{scala/src/ligd.scala}
+
+This function does not deal with cycles nor does it support very long lists. In
+the first case, it would need to keep track of which objects it visited already;
+and in the second case, it would need to manage stack itself or be tail recursive.
+
+Making the function tail-recursive seems straight forward. There is one issue,
+though: Scala will not consider the calls to \cd{geq} eligible for tail call
+optimization, as the type parameters differs. The only ways to deal with deeply
+nested structures are thus manual stack management or trampolines\footnote{The
+\cd{scala.util.control.TailCalls} object makes trampolines easy to write}. This
+does not matter much in this chapter.
 \end{example}
 
 
