@@ -1,9 +1,4 @@
-\section{Performance of the libraries}
-The performance of the libraries was tested by running various tests on them,
-each 60 thousand times, and taking the average of the last 30 thousand runs.
-
-The exact testing framework and all performed tests can be seen in
-section~\ref{src:test}.
+\section{Performance benchmark results}
 
 \begin{table}[ht]
 \input{bench}
@@ -11,5 +6,23 @@ section~\ref{src:test}.
 \label{bench}
 \end{table}
 
-As we can see in in table~\ref{bench}, all tested libraries perform roughly
-the same time-wise.
+The performance of the libraries was tested by running various tests on them,
+each 60 thousand times, and taking the average of the last 30 thousand runs.
+The tests are:
+
+\begin{description}
+    \item[company]The `company' test increases the salary in a company
+object. The company consists of a list of $n$ departments, each department has
+$n$ employees and $1$ manager, making a total of $n^{2} + n$ salaries.
+
+    \item[geq] The `geq' benchmark compares two lists for equality, where the
+               the lists are consecutive ranges $[1, n]$ and $[1, n+1]$ of
+               integers.
+
+    \item[min] The `min' benchmark calculates the minimum of a list.
+
+    \item[sum] The `sum' benchmark calculates the sum of a list.
+\end{description}
+
+The `min' and `sum' tests should show the same performance, as both are the
+same basic type of fold. They use the longer list of the `geq' benchmark.
