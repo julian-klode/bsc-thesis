@@ -126,7 +126,7 @@ remaining cases to the implementation in the super class.
 
 For example, if we transform \cd{geq} according to those rules, we can
 easily extend it with a special case for lists, as shown in listing~\ref{src:ligd-extensible:geqlist}.\footnote{The complete example with the transformed \cd{geq} can be found in
-section~\ref{src:ligd-extensible}}
+the file~\texttt{src/ligd-extensible.scala}}
 \lstinputlisting[firstline=76,lastline=85,float=ht,caption=Extended Generic Equality in LIGD,label=src:ligd-extensible:geqlist]{scala/src/ligd-extensible.scala}
 This approach using classes is not applicable to Haskell, but it is possible
 to do something similar - by passing the function as an argument:
