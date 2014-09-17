@@ -61,17 +61,16 @@ parameter of the type A, this style of writing becomes inconsistent.
     perform :: a -> Boolean
 \end{lstlisting}
 We can only directly translate the \cd{perform} method to Scala. The \cd{factor}
-method can only be translated by use of a generic function -- this will
-require a stub implementation, that instances can specialize.
+method can not be expressed in this scheme, it would need to be a global
+function for every type implementing \cd{PerformerFactory}.
 \begin{lstlisting}
-  trait PerformerFactory[A] {
-    def factor : A
+  trait PerformerFactory {
+    def perform: Boolean
   }
-  def perform[A](a: A) : Boolean = throw new Exception
 \end{lstlisting}
 The end result is inconsistent, because one method is now a method of
 instance objects whereas the other is translated to a global function. It
-also permits instances of the trait that only implement the \cd{factor}
+also permits instances of the trait that only implement the \cd{perform}
 method.
 \end{example}
 \subsection{The functional approach}
