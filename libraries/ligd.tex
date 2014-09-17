@@ -128,6 +128,12 @@ For example, if we transform \cd{geq} according to those rules, we can
 easily extend it with a special case for lists, as shown in listing~\ref{src:ligd-extensible:geqlist}.\footnote{The complete example with the transformed \cd{geq} can be found in
 the file~\texttt{src/ligd-extensible.scala} \cite{src}}
 \lstinputlisting[firstline=76,lastline=85,float=ht,caption=Extended Generic Equality in LIGD,label=src:ligd-extensible:geqlist]{scala/src/ligd-extensible.scala}
+
+A similar approach is used in `Lightweight modular staging'\cite{DBLP:conf/gpce/RompfO10}\cite{DBLP:journals/cacm/RompfO12},
+although based on traits rather than classes, and not using an \cd{apply}
+method -- thus making it easily possible to combine functions using inheritance
+rather than composition of objects.
+
 This approach using classes is not applicable to Haskell, but it is possible
 to do something similar - by passing the function as an argument:
 \begin{enumerate}
