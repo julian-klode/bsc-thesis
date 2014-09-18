@@ -1,33 +1,44 @@
 \chapter{Introduction}
-any programming languages -- for example; Haskell, Java, Scala, C++ --
-these days support a form of parametric polymorphism.
-Parametric Polymorphism allows the definition of data types that abstract over
-the type of some element they store, such as lists that can store elements of
-some unspecified type \lstinline{a}:
-\begin{lstlisting}
-sealed abstract class List[a]
-case class Nil[a]() extends List[a]
-case class Cons[a](car: a, cdr: List[a]) extends List[a]
-\end{lstlisting}
-In Scala and other object-oriented (or influenced) languages this concept is
-called generics.
-Datatype-generic programming is a different concept. Instead of abstracting
-over the type of the elements, it abstracts over the containing type.
+Datatype-generic operations are operations that are defined over the shapes
+of objects rather than any specific types of objects. This is different from
+the concept of parametric polymorphism, also called generic programming in
+languages like Scala:
 
-For example, increasing all integers in a data structure is an example for a
-datatype-generic operation. We basically want to write something like:
-\begin{lstlisting}
-def incInt[C](c: C) = everywhere((i: Int) => i + 1)(c)
-\end{lstlisting}
-or (if we want to restrict it to types storing integers)
-\begin{lstlisting}
-def incInt[C[_]](c: C[Int]) = everywhere((i: Int) => i + 1)(c)
-\end{lstlisting}
-And as we will see in later chapters, we can indeed write something very similar,
-albeit with some additional (implicit) parameters.
+Where parametric polymorphism abstracts away the elements of a container,
+datatype-generic programming essentially abstracts away the container.
 
-Scala is an interesting language to look at because it offers some features Haskell
-does not have in the type system, like sub typing (unsealed classes). It is also
-eager and not lazy, further complicating some operations, as we will see.
+In the rest of this thesis, `generic programming' means `datatype-generic
+programming'.
 
-\todo{Extend a bit}
+
+\begin{example}[Parametric polymorphism]
+The type constructor \cd{List} is an example for parametric polymorphism. For
+example, you can generate the length of a list:
+
+\begin{lstlisting}
+    def length[T](list: List[T]) = ...
+\end{lstlisting}
+\end{example}
+
+\begin{example}[Datatype-generic operation]
+A datatype-generic operation is an operation that abstracts the outer type, and
+works with specific inner types. For example, a sum that can work on containers
+of integers; that is, something like:
+\begin{lstlisting}
+    def sum[C[_]](list: C[Int]) = ...
+\end{lstlisting}
+\end{example}
+
+There are two basic ways of how datatype-generic programming libraries expose
+their interfaces:
+
+\begin{enumerate}
+    \item By representing objects as sums and products
+    \item By providing combinators for performing operations
+\end{enumerate}
+
+In the first style, a generic operation will traverse the data structure and
+perform its operation. In the second style, the generic library takes care of
+the traversal and offers some combinators to allow working with the elements.
+As a comparison: The first style is similar to traversing a list manually whereas
+the second style resembles a fold.
