@@ -171,3 +171,34 @@ define a custom \cd{equals()} method, as seen in listing~\ref{rmycustomtype}.
     }
   }
 \end{lstlisting}
+
+
+\begin{example}[Use case: folds]
+  By implementing equality on types, we can implement a sort of fold like
+  function.
+
+  \lstinputlisting[firstline=128,lastline=135,float=ht,caption=LIGD folding,label=src:ligd:gfoldl,style=breaklines]{scala/src/ligd.scala}
+
+  This is the most generic way to define the fold. A less generic way would be
+  to restrict \cd{C} to a type that can contain objects of type \cd{N}. One way
+  to deal with normal container types, is to make \cd{C} a type constructor,
+  taking \cd{N} as its parameter.
+
+  \lstinputlisting[firstline=157,lastline=157,float=ht,caption=Simple LIGD folding,label=src:ligd:foldl,style=breaklines]{scala/src/ligd.scala}
+
+  Furthermore, re-ordering the parameters as done in \cd{foldl} allows the
+  scala compiler to infer the type of a lambda passed as the third argument,
+  allowing us to omit type annotations for it.
+\end{example}
+
+\begin{example}[Use case: transformation combinator]
+  Another way we can use equality comparison is to implement a transformation
+  combinator that performs a transformation\footnote{Similar to \cd{everywhere}
+  of Shapeless and \cd{transformBi} of Uniplate}.
+
+  \lstinputlisting[firstline=228,lastline=235,float=ht,caption=LIGD `everywhere',label=src:ligd:everywhere,style=breaklines]{scala/src/ligd.scala}
+
+  This implementation does not recurse into objects of the target type, depending
+  on the task, this might be an even better idea (example: an object representing
+  an expression consisting of sub-expressions).
+\end{example}
