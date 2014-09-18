@@ -59,6 +59,14 @@
                {μ}{{\textmu}}1
 }
 
+% A style that breaks lines
+\lstdefinestyle{breaklines}{
+      breaklines=true,
+      breakatwhitespace=true,
+      prebreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+      postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookrightarrow\space}}
+}
+
 % Add the current section to the listing number
 \AtBeginDocument{\renewcommand{\thelstlisting}{\thesection.\arabic{lstlisting}}}
 \makeatletter
