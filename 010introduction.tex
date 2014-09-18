@@ -42,3 +42,77 @@ perform its operation. In the second style, the generic library takes care of
 the traversal and offers some combinators to allow working with the elements.
 As a comparison: The first style is similar to traversing a list manually whereas
 the second style resembles a fold.
+
+\section*{What defines a good generic programming library?}
+
+In combinator-based libraries, there are usually three different categories of
+combinators (where \cd{T} is a fixed type):
+
+\begin{enumerate}
+    \item \textbf{Consumers} take a generic object and return an object of a fixed type, they have
+           a type of the form \cd{a => T}
+
+           Example: The sum function from above.
+
+    \item \textbf{Transformers} map from one generic type to another or the same, the have a type of the form
+            \cd{a => a} or \cd{a => b}
+
+
+            Example: A function that increments every integer in an object, returning the modified one.
+
+    \item \textbf{Producers} produce a generic object, they have a type of the form: \cd{T => a}
+
+            Example: A function that takes an integer and the representation of
+                     a tree and returns a tree.
+\end{enumerate}
+
+
+A powerful generic programming library should support the following criteria:
+
+\paragraph{Ad-hoc cases:} Can a function deal with a specific type in an ad-hoc way?
+
+For example, if the library exposes sums and products; can a function
+only work on sums and products, or can it match a type directly, for
+example; can it find all lists in an object?
+
+\paragraph{Extensibility:} Can an existing function be extended with new ad-hoc cases?
+
+For example, imagine a pre-existing function to calculate the depth of a data
+structure. If you write a new tree type that stores the depth in its nodes, can
+you extend the pre-existing function to simply return that value?
+
+\paragraph{Multi-parametric type functions:} Can there be generic functions with two generic parameters?
+
+For example, you might want to define a generic equality function.
+
+\paragraph{First-class generics:} Can a generic function be passed to another function?
+
+For example, suppose a function \cd{gmapQ} that takes another generic function \cd{f}
+and an object and maps the function \cd{f} over all members of the object, constructing
+a list of new objects.
+
+\paragraph{Automatic representations:} Generic libraries are usually implemented
+using some sort of representation objects that describe the shape of the
+objects of a type. Is it possible to create those automatically?
+
+\paragraph{Separate compilation:} Can I introduce a new type in a new module
+and use it with a generic function in an existing module?
+
+\textit{All of the libraries in this thesis support this.}
+
+\paragraph{Constructor names:} If objects are represented as sums of products;
+can those products have names?
+
+For example, a pretty printer would want to print constructor names.
+
+
+\section*{Current state}
+Generic programming is primarily used by the Haskell community. There are
+several libraries available; and the Glasgow Haskell Compiler already provides
+a library as part of its \cd{base} package, the \cd{Data.Data} module. This
+module is based on another library called `Scrap your boilerplate'\cite{DBLP:conf/tldi/LammelJ03}
+and is combinator-based.
+
+Scala has one generic programming library called `Shapeless'. Shapeless was
+initially derived from scrap your boilerplate, but became more sophisticated
+over the time, adding features like heterogeneous lists.
