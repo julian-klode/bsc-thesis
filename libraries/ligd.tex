@@ -11,8 +11,9 @@ Listing~\ref{ligd-base} shows the basic \cd{Rep} trait with instances for
 scalar types, sums (represented using \cd{Either}), and products (represented
 using \cd{Tuple2}). As explained in the previous chapter, we use implicit
 here to allow the compiler to automatically infer the correct \cd{Rep}
-instance for generic function calls.
-
+instance for generic function calls. This  utilises a simple helper function called \cd{rep},
+shown in listing~\ref{src:ligd:rep}.
+\lstinputlisting[firstline=217,lastline=217,float=ht,caption=LIGD `rep' helper function,label=src:ligd:rep]{scala/src/ligd.scala}
 
 \subsection{User-defined types}
 In order to work with user-defined (case) classes, those need to be
