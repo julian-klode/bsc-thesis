@@ -6,10 +6,11 @@ In Generics for the Masses \cite{GM}, Ralf Hinze introduces an alternative
 encoding of generic functions. While objects are still viewed as sums and
 products of scalar values, generic functions are now defined as instances
 of a \cd{Generic} type class, with one method for each type of object
-supported, our slightly extended version can be seen in Figure~\ref{src:emgm:Generic}
-\lstinputlisting[firstline=40,lastline=50,label=src:emgm:Generic,caption=The \cd{Generic} trait in GM]{scala/src/emgm.scala}
+supported, our slightly extended version can be seen in Figure~\ref{src:emgm:Generic}.
 The parameter \cd{G} refers to a type constructor for a type that stores
 a function of a specific type.
+\lstinputlisting[firstline=40,lastline=50,label=src:emgm:Generic,caption=The \cd{Generic} trait in GM]{scala/src/emgm.scala}
+
 
 In addition to the cases known from LIGD, this also introduces a \cd{constr}
 case for representing named constructors of a certain arrity. The default
@@ -22,8 +23,7 @@ Imagine we want to check arbitrary objects of the same type for equality.
 Our type \cd{G[\_]} must have a function that accepts two
 value of the type given by the first parameter, and returns a boolean
 -- see Listing~\ref{src:emgm:GEq}.
-\lstinputlisting[firstline=172,lastline=192,float=ht,label=src:emgm:GEq,caption=A generic equality function in GM]{scala/src/emgm.scala}
-
+\lstinputlisting[firstline=172,lastline=192,label=src:emgm:GEq,caption=A generic equality function in GM]{scala/src/emgm.scala}
 We use closures here instead of normal methods in order to have the
 compiler infer the types automatically, as explained in Section~\ref{type-inference}.
 As with LIGD, deeply nested data structures and cycles will cause this
