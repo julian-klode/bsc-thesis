@@ -3,7 +3,6 @@ Datatype-generic operations are operations that are defined over the shapes
 of objects rather than any specific types of objects. This is different from
 the concept of parametric polymorphism, also called generic programming in
 languages like Scala:
-
 Where parametric polymorphism abstracts away the elements of a container,
 datatype-generic programming essentially abstracts away the container.
 
@@ -40,13 +39,13 @@ their interfaces:
 In the first style, a generic operation will traverse the data structure and
 perform its operation. In the second style, the generic library takes care of
 the traversal and offers some combinators to allow working with the elements.
-As a comparison: The first style is similar to traversing a list manually whereas
+The first style is thus similar to traversing a list manually whereas
 the second style resembles a fold.
 
 \section*{What defines a good generic programming library?}
-
-In combinator-based libraries, there are usually three different categories of
-combinators (where \cd{T} is a fixed type):
+In `Comparing Libraries for Generic Programming in Haskell' \cite{DBLP:conf/haskell/RodriguezJJGKO08}
+, three basic types of operations a library should support were identified.
+These are (where \cd{T} is a fixed type):
 
 \begin{enumerate}
     \item \textbf{Consumers} take a generic object and return an object of a fixed type, they have
@@ -54,9 +53,8 @@ combinators (where \cd{T} is a fixed type):
 
            Example: The sum function from above.
 
-    \item \textbf{Transformers} map from one generic type to another or the same, the have a type of the form
+    \item \textbf{Transformers} map from one generic type to another or the same, they have a type of the form
             \cd{a => a} or \cd{a => b}
-
 
             Example: A function that increments every integer in an object, returning the modified one.
 
@@ -67,42 +65,44 @@ combinators (where \cd{T} is a fixed type):
 \end{enumerate}
 
 
-A powerful generic programming library should support the following criteria:
+In addition to supporting the three type of operations above, a good generic
+programming library should also fulfil the following criteria:
 
 \paragraph{Ad-hoc cases:} Can a function deal with a specific type in an ad-hoc way?
-
-For example, if the library exposes sums and products; can a function
-only work on sums and products, or can it match a type directly, for
-example; can it find all lists in an object?
+\\
+For example, if the library exposes sums and products can a function
+only work on sums and products; or can it match some types directly? That is,
+can you write a function that collects all objects of a specific type?
 
 \paragraph{Extensibility:} Can an existing function be extended with new ad-hoc cases?
-
+\\
 For example, imagine a pre-existing function to calculate the depth of a data
-structure. If you write a new tree type that stores the depth in its nodes, can
-you extend the pre-existing function to simply return that value?
+structure. If we write a new tree type that stores the depth in its nodes, can
+we extend the pre-existing function to simply return that value?
 
-\paragraph{Multi-parametric functions:} Can there be generic functions with two generic parameters?
-
-For example, you might want to define a generic equality function.
+\paragraph{Multi-parametric functions:} Can there be functions with two generic parameters?
+\\
+For example, we might want to define a generic equality function, a generic
+comparison function, or a function that adds generic values. One other question
+to consider here is whether the parameters can be of different types.
 
 \paragraph{First-class generics:} Can a generic function be passed to another function?
-
+\\
 For example, suppose a function \cd{gmapQ} that takes another generic function \cd{f}
 and an object and maps the function \cd{f} over all members of the object, constructing
 a list of new objects.
 
 \paragraph{Automatic representations:} Generic libraries are usually implemented
-using some sort of representation objects that describe the shape of the
-objects of a type. Is it possible to create those automatically?
+using some sort of representation objects that describe the shape of
+objects. Is it possible to create those automatically?
 
-\paragraph{Separate compilation:} Can I introduce a new type in a new module
+\paragraph{Separate compilation:} Can we introduce a new type in a new module
 and use it with a generic function in an existing module?
+\textit{(All of the libraries in this thesis support this)}
 
-\textit{All of the libraries in this thesis support this.}
 
 \paragraph{Constructor names:} If objects are represented as sums of products;
 can those products have names?
-
 For example, a pretty printer would want to print constructor names.
 
 
@@ -115,4 +115,5 @@ and is combinator-based.
 
 Scala has one generic programming library called `Shapeless'. Shapeless was
 initially derived from scrap your boilerplate, but became more sophisticated
-over the time, adding features like heterogeneous lists.
+over the time, adding features like heterogeneous lists. This is covered
+in more detail in section~\ref{shapeless}.
