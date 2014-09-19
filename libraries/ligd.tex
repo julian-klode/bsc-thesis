@@ -3,8 +3,11 @@
 \lstinputlisting[firstline=53,lastline=68,float=ht,caption=LIGD Basics,label=ligd-base]{scala/src/ligd.scala}
 
 LIGD\cite{Cheney:2002:LIG:581690.581698} is a simple library that provides a \cd{Rep} trait that describes
-the structure of a type using sums, products, and scalar values. This
-version of LIGD is more powerful than the original one, though, as we
+the structure of a type using sums, products, and scalar values.\footnote{This
+version is equivalent from the first encoding in that paper, but actually
+derived from the `Comparing libraries for generic programming in haskell'
+paper\cite{DBLP:conf/haskell/RodriguezJJGKO08}}
+This version of LIGD is more powerful than the original one, though, as we
 will see later.
 
 Listing~\ref{ligd-base} shows the basic \cd{Rep} trait with instances for
@@ -203,3 +206,18 @@ define a custom \cd{equals()} method, as seen in listing~\ref{rmycustomtype}.
   on the task, this might be an even better idea (example: an object representing
   an expression consisting of sub-expressions).
 \end{example}
+
+\subsection{Variant: HLIGD -- LIGD with heterogeneous lists}
+A new variant of LIGD included in the source code \footnote{See \texttt{hlists.scala} and \texttt{hligd.scala} in the \texttt{src} directory\cite{src}}
+uses heterogeneous lists instead of tuples for representing products.
+This variant is more a proof of concept rather than a finished version, though.
+
+Heterogeneous lists allow for a more natural representation of constructors
+compared to nested pairs. In addition, they make it possible to easily implement
+zippers -- allowing us to convert any non-scalar object with a representation
+to a zipper.
+
+Additionally, this variant of LIGD introduces a new basic type of representation
+for sequences, allowing lists, sets, and other types to be represented more
+efficiently than with a nested encoding; thus reducing the number of recursion
+steps and reducing the chance of an algorithm aborting due to a stack overflow.

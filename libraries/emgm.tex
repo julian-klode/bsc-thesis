@@ -23,7 +23,7 @@ Imagine we want to check arbitrary objects of the same type for equality.
 Our type \cd{G[\_]} must have a function that accepts two
 value of the type given by the first parameter, and returns a boolean
 -- see Listing~\ref{src:emgm:GEq}.
-\lstinputlisting[firstline=172,lastline=192,label=src:emgm:GEq,caption=A generic equality function in GM]{scala/src/emgm.scala}
+\lstinputlisting[firstline=172,lastline=192,label=src:emgm:GEq,float=ht,caption=A generic equality function in GM]{scala/src/emgm.scala}
 We use closures here instead of normal methods in order to have the
 compiler infer the types automatically, as explained in Section~\ref{type-inference}.
 As with LIGD, deeply nested data structures and cycles will cause this
