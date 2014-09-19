@@ -115,7 +115,7 @@ correct argument for the \cd{eq} parameter, and we can now run:
 \end{lstlisting}
 
 
-We can also implement instance that require some sort of context. For
+We can also implement instances that require some sort of context. For
 example, if we want to implement \cd{MyEq} for tuples of objects implementing
 \cd{MyEq} as well, we can write:
 \begin{lstlisting}
@@ -125,13 +125,13 @@ example, if we want to implement \cd{MyEq} for tuples of objects implementing
                                     && eb.myEquals(a._2, b._2)
   }
 \end{lstlisting}
-Now we can compare tuples: For example, in the following example, Scala will
+Now we can compare tuples: For example, in the following call, Scala will
 automatically infer the correct instance of \cd{MyEq[(Int, Int)]}:
 \begin{lstlisting}
   > myEquals((1,2), (1,2))
   true
 \end{lstlisting}
-We can still pass  it manually though
+We can still pass it manually as well:
 \begin{lstlisting}
   > myEquals((1,2), (1,2))(myEqTuple(MyEqInt, MyEqInt))
   true
@@ -143,8 +143,8 @@ We can still pass  it manually though
 Compared to Haskell, Scala's type inference is weaker. For example, when
 defining a function, the type of parameters need to be defined. An exception
 to this are anonymous functions. If the Scala compiler knows which type the
-function must have, it can automatically infer the type of an anonymous
-function. Thus, in order to avoid repetitious type information in the code,
+function must have, it can automatically infer the types of the parameters.
+Thus, in order to avoid repetitious type information in the code,
 we can change our \cd{MyEq} example to:
 \begin{lstlisting}
   trait MyEq[A] {
@@ -154,6 +154,7 @@ we can change our \cd{MyEq} example to:
     override def myEquals = a => b => a == b
   }
 \end{lstlisting}
+This way,
 Type annotations are not required in method implementations anymore. This
 technique is shown in the port of the EMGM library.
 
@@ -167,9 +168,9 @@ complex types can be inferred more easily. For example, in Haskell,
 \end{lstlisting}
 Scala does not seem to be able to understand this, it will fail to
 infer the type of the first argument. Moving the first argument to
-the end fixes the issue, as Scala can then simply infer from left
-to right. It basically looks like this in Scala (if you ignore that
-the first argument is actually the object which foldLeft is a method
+the end fixes the issue, as Scala can then simply infer the types, from left
+to right. It basically looks like this in Scala (except that
+the first argument would actually be an object which foldLeft is a method
 of):
 \begin{lstlisting}
   foldLeft[a,b] : [b] => a => (a => b => a) => a
@@ -222,3 +223,6 @@ Using structural types the \cd{Returning} type looks like this:
   type Returning[T] = { def apply[A: Rep](a: A) : T }
 \end{lstlisting}
 and every object providing such a method is implicitly an instance of that type.
+
+Structural types have the minor disadvantage that \cd{scala.language.reflectiveCalls}
+must be imported (or the equivalent command-line argument be set) when calling them.
