@@ -26,7 +26,19 @@ flexibility compared to the function encoding, and there's not much reason
 to use functions.
 
 \subsection{EMGM}
-\todo{Add EMGM}
+There are two possible ways to implement this in EMGM. One solution is to
+simply pass and use the \cd{GRep} instances like functions, the other is to do it
+like LIGD. The first option looks more clean, but has the disadvantage that
+some wrapper functions might pass additional fixed arguments to the method
+in the \cd{GRep} instance, \cd{min} for example passes \cd{Int.MaxValue} as
+an argument.
+
+The second way is less clean, because forcing functions to be written as objects
+is ugly, and because the higher-order functions can get quite long, due to the
+use of higher-kinded types -- which need to be written as explicit parameters,
+whereas the \cd{Rep} instances in LIGD can be passed using a shorthand syntax.
+
+\lstinputlisting[firstline=359,lastline=363,label=src:emgm:apply,caption=Simple `apply' function for EMGM]{scala/src/emgm.scala}
 
 \subsection{Uniplate}
 It is possible to encode all sorts of functions using a similar encoding

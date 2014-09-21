@@ -9,7 +9,7 @@ of a \cd{Generic} type class, with one method for each type of object
 supported, our slightly extended version can be seen in Figure~\ref{src:emgm:Generic}.
 The parameter \cd{G} refers to a type constructor for a type that stores
 a function of a specific type.
-\lstinputlisting[firstline=40,lastline=50,label=src:emgm:Generic,caption=The \cd{Generic} trait in GM]{scala/src/emgm.scala}
+\lstinputlisting[firstline=41,lastline=51,label=src:emgm:Generic,caption=The \cd{Generic} trait in GM]{scala/src/emgm.scala}
 
 
 In addition to the cases known from LIGD, this also introduces a \cd{constr}
@@ -23,7 +23,7 @@ Imagine we want to check arbitrary objects of the same type for equality.
 Our type \cd{G[\_]} must have a function that accepts two
 value of the type given by the first parameter, and returns a boolean
 -- see Listing~\ref{src:emgm:GEq}.
-\lstinputlisting[firstline=172,lastline=192,label=src:emgm:GEq,float=ht,caption=A generic equality function in GM]{scala/src/emgm.scala}
+\lstinputlisting[firstline=173,lastline=193,label=src:emgm:GEq,float=ht,caption=A generic equality function in GM]{scala/src/emgm.scala}
 We use closures here instead of normal methods in order to have the
 compiler infer the types automatically, as explained in Section~\ref{type-inference}.
 As with LIGD, deeply nested data structures and cycles will cause this
@@ -36,7 +36,7 @@ to a representation of sums and products, we simply call the members of
 the \cd{Generic} instance we need. Some of the instances of such a \cd{Rep}
 trait are shown in listing~\ref{src:emgm:Rep}.
 
-\lstinputlisting[firstline=58,lastline=70,label=src:emgm:Rep,caption=The \cd{Rep} trait in GM and some instances]{scala/src/emgm.scala}
+\lstinputlisting[firstline=59,lastline=71,label=src:emgm:Rep,caption=The \cd{Rep} trait in GM and some instances]{scala/src/emgm.scala}
 
 We can now, similar to  LIGD, represent arbitrary types as sums of products.
 Recall the list example from LIGD.
@@ -47,38 +47,38 @@ more verbose definition of \cd{RList}, because we need to split the generic
 function `creation' (the description of the type) out in \cd{rList}.
 
 We will see that this only gets worse once we introduce ad-hoc cases.
-\lstinputlisting[firstline=119,lastline=138,float=ht,label=src:emgm:rList,caption=Representing lists in GM]{scala/src/emgm.scala}
+\lstinputlisting[firstline=120,lastline=139,float=ht,label=src:emgm:rList,caption=Representing lists in GM]{scala/src/emgm.scala}
 
 \subsection{Extensibility and Modularity}
 Now consider that we want to treat lists specially, that is, create an
 ad-hoc case of \cd{geq} that handles lists directly, instead of as a
 sum of products representations. That is, we need a subclass of Generic
 that can work on lists, something like:
-\lstinputlisting[firstline=238,lastline=240,label=src:emgm:GenericList,caption=Generic with ad-hoc list case]{scala/src/emgm.scala}
+\lstinputlisting[firstline=239,lastline=241,label=src:emgm:GenericList,caption=Generic with ad-hoc list case]{scala/src/emgm.scala}
 Note that the special case for lists defers to the sum of product variant
 if it is not handled by the generic function. We can thus use that extra
 method (override it) or ignore it (and treat it using sums and products).
 
 An example for using it would be a generic equality function with an optimized
 version for lists, like figure~\ref{src:emgm:GEqList} shows.
-\lstinputlisting[firstline=251,lastline=268,float=ht,label=src:emgm:GEqList,caption=Generic equality specialised to lists]{scala/src/emgm.scala}
+\lstinputlisting[firstline=252,lastline=269,float=ht,label=src:emgm:GEqList,caption=Generic equality specialised to lists]{scala/src/emgm.scala}
 
 What we are still missing is a sort of dispatcher, like \cd{Rep} in Generics
 for the masses, but this time, \cd{rep} should not be parameterized over \cd{G},
 rather the type itself should be -- the resulting \cd{GRep} trait defines a
 representation of a type for a specific generic function, rather than for all
 generic functions.
-\lstinputlisting[firstline=200,lastline=202,label=src:emgm:GRep,caption=The \cd{GRep} dispatcher]{scala/src/emgm.scala}
+\lstinputlisting[firstline=201,lastline=203,label=src:emgm:GRep,caption=The \cd{GRep} dispatcher]{scala/src/emgm.scala}
 
 The instances of \cd{GRep} are basically the same as those of \cd{Rep}, except
 that they capture the \cd{Generic[G]} in the constructor, rather than the
 method.
 
-\lstinputlisting[firstline=232,lastline=235,label=src:emgm:GRProd,caption=Example of a \cd{GRep} instance: \cd{GRProd}]{scala/src/emgm.scala}
+\lstinputlisting[firstline=233,lastline=236,label=src:emgm:GRProd,caption=Example of a \cd{GRep} instance: \cd{GRProd}]{scala/src/emgm.scala}
 
 We can now add a representation for our special case of lists:
 
-\lstinputlisting[firstline=243,lastline=246,label=src:emgm:GRList,caption=Example of a \cd{GRep} instance: \cd{GRList}]{scala/src/emgm.scala}
+\lstinputlisting[firstline=244,lastline=247,label=src:emgm:GRList,caption=Example of a \cd{GRep} instance: \cd{GRList}]{scala/src/emgm.scala}
 
 Unlike the other instances of \cd{GRep}, this one does not take a \cd{Generic[G]},
 but rather a \cd{GenericList[G]}. This means that functions will only work on
