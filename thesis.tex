@@ -19,6 +19,10 @@
 \subtitle{Bachelor Thesis}
 \date{}
 
+% Make sure that a bibliography entry does not have a page break
+\usepackage{etoolbox}
+\apptocmd{\thebibliography}{\interlinepenalty 10000\relax}{}{}
+
 % Setup PDF support
 \hypersetup{
    hidelinks=true,
