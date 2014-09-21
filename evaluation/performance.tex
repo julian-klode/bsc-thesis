@@ -7,8 +7,23 @@
 \end{table}
 
 The performance of the libraries was tested by running various tests on them,
-each 60 thousand times, and taking the average of the last 30 thousand runs.
-The tests are:
+the measurements are done using scalameter 0.6 with 150 runs, default warmer,
+and a \cd{Measurer.IgnoringGC with Measurer.OutlierElimination} as the measurer.
+
+\begin{table}[ht]
+\begin{tabular}{l|l}
+    Scala & 2.11.2 \\
+    JRE   & OpenJDK Runtime Environment (IcedTea 2.5.2) (7u65-2.5.2-4) \\
+    JVM   & OpenJDK 64-Bit Server VM (build 24.65-b04, mixed mode) \\
+    Arguments & -J-Xss1024m (increased stack size to 1GB) \\
+    OS    & Debian GNU/Linux `unstable' (2014-09-21), kernel 3.16.2 \\\hline
+    CPU   & Intel Core i5-3320M (2.6 GHz, 3.3 GHz turbo boost) \\
+    RAM   & 8 GB
+\end{tabular}
+\caption{Benchmark environment}
+\end{table}
+
+The tests that were run were:
 
 \begin{description}
     \item[company]The `company' test increases the salary in a company
@@ -16,7 +31,7 @@ object. The company consists of a list of $n$ departments, each department has
 $n$ employees and $1$ manager, making a total of $n^{2} + n$ salaries.
 
     \item[geq] The `geq' benchmark compares two lists for equality, where the
-               the lists are consecutive ranges $[1, n]$ and $[1, n+1]$ of
+               the lists are consecutive ranges $[1, n^{2}]$ and $[1, n^{2} +1]$ of
                integers.
 
     \item[min] The `min' benchmark calculates the minimum of a list.
@@ -26,3 +41,12 @@ $n$ employees and $1$ manager, making a total of $n^{2} + n$ salaries.
 
 The `min' and `sum' tests should show the same performance, as both are the
 same basic type of fold. They use the longer list of the `geq' benchmark.
+
+Apparently, LIGD and EMGM perform roughly the same. Shapeless is slower in the
+company benchmark, but faster in the other ones that only use lists which seems
+to indicate that shapeless is more optimised for lists than LIGD and EMGM.
+
+The HLIGD benchmark behaves like LIGD for the company benchmark, but is as fast
+a the direct version for the other cases, because HLIGD directly uses
+\cd{foldLeft} on sequences. Any time difference compared to the direct code is
+noise.
