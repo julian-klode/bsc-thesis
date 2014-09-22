@@ -6,7 +6,7 @@
     Ad-hoc cases & \checkmark$^{+}$ & $\checkmark$ & \checkmark & \checkmark \\
     Multi-parameter functions & \checkmark & \checkmark & ($\times$) & \checkmark{} \\
     Extensibility & \checkmark $^{+}$ & $\circ$ & $\times$ & $\circ$ \\
-    First-class generics & \checkmark & $\circ$ & $\circ$ & \checkmark \\ \hline
+    First-class generics & \checkmark & $\circ$ & $\circ$ & $\circ$ \\ \hline
     Automatic representations & $\times$ & $\times$ & ($\checkmark$) & \checkmark \\
     Ease of use & \checkmark & $\circ$ & \checkmark & $\circ$
   \end{tabular}
@@ -48,12 +48,6 @@ can be extended, allowing new ad-hoc cases to some extent: Some parts, like
 the code that applies that function using a combinator needs to be changed to
 include the new combinator.
 
-\begin{example}[Extensibility in Shapeless]
-    Given a polymorphic function \cd{incS <: Poly1}, another function
-    \cd{incS2 <: Poly} can be created by making the \cd{default} method
-    call \cd{incS} and providing additional or replacement cases.
-\end{example}
-
 \paragraph{First class generic functions}
 LIGD does not directly first class generic functions, they can be encoded as
 objects with an apply method however. This is a limitation of the Scala
@@ -65,7 +59,7 @@ with a default case which is equally powerful as the EMGM and LIGD cases.
 
 \paragraph{Automatic representations}
 Only shapeless supports automatic representations. It should be possible to
-automatically generate automatic representations for Uniplate using Shapeless,
+automatically generate representations for Uniplate using Shapeless,
 just like they can be generated in Haskell from \cd{Data} and \cd{Typeable}
 instances, but this would require further investigation. It is also the slowest
 form of instances Uniplate supports.
