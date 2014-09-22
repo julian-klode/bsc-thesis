@@ -12,7 +12,7 @@ The \cd{Uniplate} type class, shown in listing~\ref{src:uniplate:Uniplate}
 describes recursive types like terms and expressions. Its only primitive
 operation is the \cd{uniplate()} method.
 
-\lstinputlisting[firstline=38,lastline=56,label=src:uniplate:Uniplate,caption=The Uniplate type class (and various additional functions)]{scala/src/uniplate.scala}
+\lstinputlisting[firstline=38,lastline=56,label=src:uniplate:Uniplate,caption=The Uniplate type class (and various additional functions),style=breaklines]{scala/src/uniplate.scala}
 
 The \cd{uniplate()} method takes an object of type \cd{T} and returns a tuple
 of all direct children of the same type and a function that constructs a new \cd{T}
@@ -63,7 +63,7 @@ Simply speaking, biplates are containers of uniplates. For example, a type
 \cd{Expr} that represents arithmetic expressions over integers has a corresponding
 \cd{Biplate[Expr, Int]}.
 
-\lstinputlisting[firstline=99,lastline=103,label=src:uniplate:Biplate,caption=The Biplate type class (and various additional functions)]{scala/src/uniplate.scala}
+\lstinputlisting[firstline=99,lastline=103,label=src:uniplate:Biplate,caption=The Biplate type class (and various additional functions),style=breaklines]{scala/src/uniplate.scala}
 
 The basic operation of a \cd{Biplate} is the \cd{biplate} method. This method
 is similar to the \cd{uniplate} method of the \cd{Uniplate} type class, but now
