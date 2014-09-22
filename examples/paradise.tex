@@ -1,7 +1,7 @@
 \section{Paradise benchmark}
-GPBench is a suite of benchmarks for comparing generic programming
-libraries in Haskell~\cite{DBLP:conf/haskell/RodriguezJJGKO08}. One
-benchmark included in it is the so-called paradise benchmark.
+GPBench, developed by Rodriguez et. al., is a suite of benchmarks for comparing
+generic programming libraries in Haskell~\cite{DBLP:conf/haskell/RodriguezJJGKO08}.
+One benchmark included in it is the so-called paradise benchmark.
 
 The paradise benchmark looks at data structures representing a company
 and tries to transform it, by increasing every salary by 10\%.{}
@@ -24,7 +24,7 @@ First of all, the type representations. For the data types \cd{Person},
 \cd{Employee}, and we can use the simplest form of definition,
 by using the \cd{rType} function we added to our LIGD implementation.
 
-\lstinputlisting[firstline=29,lastline=30,frame=t,caption={Person, Employee, and Company representations in LIGD},label=src:ligd-company:stuff]{scala/src/ligd-company.scala}
+\lstinputlisting[firstline=29,lastline=30,frame=t,caption={Person, Employee, and Company representations in LIGD},label=src:ligd-company:stuff,style=breaklines]{scala/src/ligd-company.scala}
 \lstinputlisting[firstline=46,lastline=46,frame=b]{scala/src/ligd-company.scala}
 
 Because we want to query and transform salaries, we need to treat salaries

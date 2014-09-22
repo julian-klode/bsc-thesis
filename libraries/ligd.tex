@@ -129,8 +129,8 @@ the apply method, matching on the cases we are interested in and deferring the
 remaining cases to the implementation in the super class.
 
 For example, if we transform \cd{geq} according to those rules, we can
-easily extend it with a special case for lists, as shown in listing~\ref{src:ligd-extensible:geqlist}.\footnote{The complete example with the transformed \cd{geq} can be found in
-the file~\texttt{src/ligd-extensible.scala}~\cite{src}}
+easily extend it with a special case for lists, as shown in listing~\ref{src:ligd-extensible:geqlist}.\footnote{The complete example can be found in
+the  file \texttt{src/ligd-extensible.scala}~\cite{src}}
 \lstinputlisting[firstline=76,lastline=85,float=ht,caption=Extended Generic Equality in LIGD,label=src:ligd-extensible:geqlist]{scala/src/ligd-extensible.scala}
 
 A similar approach is used in `Lightweight modular staging'~\cite{DBLP:conf/gpce/RompfO10}\cite{DBLP:journals/cacm/RompfO12},
