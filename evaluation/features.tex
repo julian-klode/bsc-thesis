@@ -54,8 +54,8 @@ objects with an apply method however. This is a limitation of the Scala
 language, not a limitation of LIGD itself. See section~\ref{universal-types}
 for a discussion on the issue. EMGM supports first class generics to some
 extend, but is complicated. Uniplate does not support a really useful form
-of first class generics. Shapeless supports first-class polymorphic functions
-with a default case which is equally powerful as the EMGM and LIGD cases.
+of first class generics. Shapeless uses Poly objects to represent generic
+functions, so sub-classing their classes makes them extensible.
 
 \paragraph{Automatic representations}
 Only shapeless supports automatic representations. It should be possible to
