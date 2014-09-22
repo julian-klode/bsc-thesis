@@ -1,4 +1,4 @@
-\documentclass[abstracton,parskip=half]{scrreprt}
+\documentclass[abstracton,parskip=half,twoside,open=right]{scrreprt}
 \usepackage[ngerman,english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -11,6 +11,12 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{textcomp}
+
+% Set the default settings of Komascript for oneside use. With 1cm for the
+% binding, this will result in 2cm inner margin; and 3cm outer margin. This
+% is less bad then the default 2 left, 4 right IMO (with binding correction
+% 3 left, 4 right).
+\usepackage[left=3cm,right=3cm,bottom=4cm,includefoot,top=3cm]{geometry}
 \DeclareUnicodeCharacter{03BC}{\textmu}
 % Setup the title page. Abuse some fields to get a nice layout
 \author{Julian Andres Klode\\Altenritter Str. 4\\34270 Schauenburg\\Matriculation number: 2403668\\\\Supervised by: Prof. Klaus Ostermann,\\\ Yufei Cai}
