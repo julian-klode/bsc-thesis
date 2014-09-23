@@ -8,10 +8,10 @@ zippers, among other things.
 
 Compared to the LIGD, EMGM, and Shapeless ports, Shapeless is far more
 advanced. It automatically works on custom Scala types without having to
-write instances of any type class; and it also uses several advanced programming
+write instances of any type class, and it also uses several advanced programming
 techniques like dependent types for its implementation. This means that using
 Shapeless is easy, as long as there is no error. Debugging errors on the other
-hand, can be quite complicated.
+hand can be quite complicated.
 
 \subsection{Polymorphic functions}
 Shapeless provides support for writing polymorphic functions in the
@@ -33,7 +33,7 @@ Shapeless provides support for writing polymorphic functions in the
 
 \begin{example}[Calculating products of numbers]
   The function \cd{prod} calculates the products of numbers. Given two \cd{Int}
-  objects it produces an \cd{Int}; given two \cd{Float} it produces a \cd{Float};
+  objects it produces an \cd{Int}, given two \cd{Float} it produces a \cd{Float},
   and so on.
   \lstinputlisting[firstline=52,lastline=57,label=src:shapeless:prod,caption=\cd{prod} -- A polymorphic function of arity 2]{scala/src/shapeless.scala}
 \end{example}
@@ -45,7 +45,7 @@ extracts objects we are interested in, the second one combines those objects
 to a result -- it basically is a fold.
 
 \begin{example}[Calculating the product of all integers in an object]
-  If we combine \cd{int1} and \cd{prod} of the previous sub section we can
+  If we combine \cd{int1} and \cd{prod} from the previous subsection we can
   easily calculate the product of all integers in a data structure (recursively).
   \lstinputlisting[firstline=73,lastline=73,label=src:shapeless:product,caption=\cd{product} -- Product of all integers in an object]{scala/src/shapeless.scala}
 \end{example}
@@ -70,7 +70,7 @@ not handled by it will be recursed into.
 \end{example}
 
 \subsection{Heterogeneous lists (\cd{HList})}
-Heterogeneous lists are like a mixture of tuples and lists, that is, they
+Heterogeneous lists are like a blend of tuples and lists. That is, they
 consist of heterogeneous elements and are variable size. Their type encodes
 the length and the type of the elements, and operations like prepending calculate
 the result type through the use of dependent types.
