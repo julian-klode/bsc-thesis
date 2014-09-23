@@ -6,8 +6,8 @@ In Generics for the Masses~\cite{GM}, Ralf Hinze introduces an alternative
 encoding of generic functions. While objects are still viewed as sums and
 products of scalar values, generic functions are now defined as instances
 of a \cd{Generic} type class, with one method for each type of object
-supported, our slightly extended version can be seen in Figure~\ref{src:emgm:Generic}.
-The parameter \cd{G} refers to a type constructor for a type that stores
+supported, a slightly extended and translated version can be seen in Figure~\ref{src:emgm:Generic}.
+The parameter \cd{G} refers to a type constructor of a type that stores
 a function of a specific type.
 \lstinputlisting[firstline=41,lastline=51,label=src:emgm:Generic,caption=The \cd{Generic} trait in GM]{scala/src/emgm.scala}
 
@@ -24,6 +24,7 @@ Our type \cd{G[\_]} must have a function that accepts two
 value of the type given by the first parameter, and returns a boolean
 -- see Listing~\ref{src:emgm:GEq}.
 \lstinputlisting[firstline=173,lastline=193,label=src:emgm:GEq,float=ht,caption=A generic equality function in GM]{scala/src/emgm.scala}
+
 We use closures here instead of normal methods in order to have the
 compiler infer the types automatically, as explained in Section~\ref{type-inference}.
 As with LIGD, deeply nested data structures and cycles will cause this
@@ -38,6 +39,7 @@ trait are shown in listing~\ref{src:emgm:Rep}.
 
 \lstinputlisting[firstline=59,lastline=71,label=src:emgm:Rep,caption=The \cd{Rep} trait in GM and some instances]{scala/src/emgm.scala}
 
+\begin{example}[Representing lists]
 We can now, similar to  LIGD, represent arbitrary types as sums of products.
 Recall the list example from LIGD.
 As we can see in Figure~\ref{src:emgm:rList}, the definition is similar to
@@ -48,6 +50,8 @@ function `creation' (the description of the type) out in \cd{rList}.
 
 We will see that this only gets worse once we introduce ad-hoc cases.
 \lstinputlisting[firstline=120,lastline=139,float=ht,label=src:emgm:rList,caption=Representing lists in GM]{scala/src/emgm.scala}
+\qed{}
+\end{example}
 
 \subsection{Extensibility and Modularity}
 Now consider that we want to treat lists specially, that is, create an
@@ -59,9 +63,12 @@ Note that the special case for lists defers to the sum of product variant
 if it is not handled by the generic function. We can thus use that extra
 method (override it) or ignore it (and treat it using sums and products).
 
+\begin{example}[Generic equality extended for lists]
 An example for using it would be a generic equality function with an optimized
 version for lists, like figure~\ref{src:emgm:GEqList} shows.
-\lstinputlisting[firstline=252,lastline=269,float=ht,label=src:emgm:GEqList,caption=Generic equality specialised to lists]{scala/src/emgm.scala}
+\lstinputlisting[firstline=252,lastline=269,label=src:emgm:GEqList,caption=Generic equality specialised to lists]{scala/src/emgm.scala}
+If we do not override \cd{list}, it would simply use the isomorphism. \qed
+\end{example}
 
 What we are still missing is a sort of dispatcher, like \cd{Rep} in Generics
 for the masses, but this time, \cd{rep} should not be parameterized over \cd{G},
@@ -71,14 +78,14 @@ generic functions.
 \lstinputlisting[firstline=201,lastline=203,label=src:emgm:GRep,caption=The \cd{GRep} dispatcher]{scala/src/emgm.scala}
 
 The instances of \cd{GRep} are basically the same as those of \cd{Rep}, except
-that they capture the \cd{Generic[G]} in the constructor, rather than the
+that they capture the \cd{Generic[G]} in the constructor and not in the
 method.
 
-\lstinputlisting[firstline=233,lastline=236,label=src:emgm:GRProd,caption=Example of a \cd{GRep} instance: \cd{GRProd}]{scala/src/emgm.scala}
+\lstinputlisting[firstline=233,lastline=236,label=src:emgm:GRProd,caption=A \cd{GRep} instance for products]{scala/src/emgm.scala}
 
 We can now add a representation for our special case of lists:
 
-\lstinputlisting[firstline=244,lastline=247,label=src:emgm:GRList,caption=Example of a \cd{GRep} instance: \cd{GRList}]{scala/src/emgm.scala}
+\lstinputlisting[firstline=244,lastline=247,label=src:emgm:GRList,caption=A \cd{GRep} instance for lists]{scala/src/emgm.scala}
 
 Unlike the other instances of \cd{GRep}, this one does not take a \cd{Generic[G]},
 but rather a \cd{GenericList[G]}. This means that functions will only work on
@@ -89,5 +96,5 @@ instead of the special case for lists in \cd{GEqList}, we could just use:
 \begin{lstlisting}
     implicit object GEqList extends MyGEq with GenericList[GEq]
 \end{lstlisting}
-to extend the universe of geq to lists -- there is no need to actually use any
+to extend the universe of \cd{geq} to lists -- there is no need to actually use any
 of the special cases.
