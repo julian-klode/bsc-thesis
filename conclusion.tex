@@ -1,11 +1,17 @@
 \chapter{Conclusion}
 Shapeless and LIGD are the best options for generic programming in Scala
 right now. Shapeless provides a much larger feature set, and is also more
-widely used, and should thus be preferred in production use.
+widely used, and should thus be preferred in production use. Where Uniplate
+is applicable (like, for interpreters), it might make sense to use that
+instead; possibly in combination with Shapeless for deriving instances like
+done in Haskell using \cd{Data} and \cd{Typeable}.
+
+EMGM does not seem to have any significant advantage compared to Shapeless that
+can outweight its disadvantages in terms of verbosity.
 
 The extended LIGD is now capable of supporting ad-hoc cases and extensibility,
 making it more powerful then the original implementation in Haskell. Its use
-of only basic language features and its easy to write representations and
+of only basic language features and its easy-to-write representations and
 functions make it an optimal choice for introducing generic programming to
 students.
 
@@ -18,6 +24,6 @@ the source code of this bachelor thesis\footnote{See \texttt{src/hligd.scala} an
 
 Another topic to look at with regards to LIGD is the handling of lists and
 other container types: Representing them as deeply-nested pairs can cause
-stack overflows when implementing algorithms in a naive way. Adding direct
+stack overflows when implementing algorithms in a naïve way. Adding direct
 support for sequences and/or implementing a set of combinators representing
 commonly-needed operations using trampolines might be worthwhile.
