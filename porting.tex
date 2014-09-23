@@ -6,18 +6,21 @@ chapter summarizes them.
 
 \section{Type classes and Instances}
 
-Haskell as a concept of type classes and instances, whereas Scala offers
+Haskell has a concept of type classes and instances, whereas Scala offers
 traits. Traits differ from type classes in that their methods always contain
 an implicit \cd{this} object, that is, they combine data and functions;
 whereas type classes do not reference any data.
 
-Given a type class like
+\textbf{Question:} Given a type class like
 \begin{lstlisting}[language=Haskell]
   class MyEq a where
     myEquals :: a -> a -> Boolean
     myEquals a b = False
 \end{lstlisting}
-how do we translate this to Scala? There are two approaches:
+how do we translate this to Scala?
+
+\textbf{Answer:} There are two approaches, an object-oriented one and a more
+functional-style one.
 
 \subsection{Object-oriented translation}
 The object-oriented approach uses traits just like interfaces in
@@ -38,9 +41,9 @@ trait and override the methods of the trait:
 This already shows one deficiency of the traits approach: We cannot
 implement a trait for a type without modifying that type itself.
 
-Writing a function using this approach is straight forward:
+Oh the other hand, writing a function using this approach is straight forward:
 \begin{lstlisting}
-  def myEquals[T <: MyEq[T]](a: T, b: T) = a.myEquals(b)
+  def notEquals[T <: MyEq[T]](a: T, b: T) = !a.myEquals(b)
 \end{lstlisting}
 
 This style makes it easy to specify contexts, so for example, if we have
@@ -52,7 +55,7 @@ a class \cd{MyOrd} for ordering that also requires equality, we can write
 \end{lstlisting}
 
 If we want to translate a type class containing a method that does not take a
-parameter of the type A, this style of writing becomes inconsistent.
+parameter of the type \cd{T}, this style of writing becomes inconsistent.
 
 \begin{example} Consider the type class
 \begin{lstlisting}[language=Haskell]
@@ -62,7 +65,8 @@ parameter of the type A, this style of writing becomes inconsistent.
 \end{lstlisting}
 We can only directly translate the \cd{perform} method to Scala. The \cd{factor}
 method can not be expressed in this scheme, it would need to be a global
-function for every type implementing \cd{PerformerFactory}.
+function for every type implementing \cd{PerformerFactory}. The translation
+would thus be:
 \begin{lstlisting}
   trait PerformerFactory {
     def perform: Boolean
@@ -80,7 +84,7 @@ Remember the type class MyEq:
     myEquals :: a -> a -> Boolean
     myEquals a b = False
 \end{lstlisting}
-We can ignore the implicit this parameter in traits and translate the type
+We can ignore the implicit \cd{this} parameter in traits and translate the type
 class as:
 \begin{lstlisting}
   trait MyEq[A] {
@@ -107,14 +111,12 @@ like this:
   true
 \end{lstlisting}
 By making \cd{MyEqInt} and the \cd{eq} parameter of \cd{myEquals} implicit,
-the Scala compiler can automatically figure out that \cd{MyEqInt} is the
+the Scala compiler can automatically infer that \cd{MyEqInt} is the
 correct argument for the \cd{eq} parameter, and we can now run:
 \begin{lstlisting}
   > myEquals(1, 1)
   true
 \end{lstlisting}
-
-
 We can also implement instances that require some sort of context. For
 example, if we want to implement \cd{MyEq} for tuples of objects implementing
 \cd{MyEq} as well, we can write:
@@ -131,7 +133,7 @@ automatically infer the correct instance of \cd{MyEq[(Int, Int)]}:
   > myEquals((1,2), (1,2))
   true
 \end{lstlisting}
-We can still pass it manually as well:
+We can still pass the dictionary manually as well:
 \begin{lstlisting}
   > myEquals((1,2), (1,2))(myEqTuple(MyEqInt, MyEqInt))
   true
@@ -141,12 +143,15 @@ We can still pass it manually as well:
 \label{type-inference}
 
 Compared to Haskell, Scala's type inference is weaker. For example, when
-defining a function, the type of parameters need to be defined. An exception
-to this are anonymous functions. If the Scala compiler knows which type the
+defining a function, the type of parameters need to be defined.
+
+An exception to this are anonymous functions.
+If the Scala compiler knows which type the
 function must have, it can automatically infer the types of the parameters.
+
 Thus, in order to avoid repetitious type information in the code,
-we can change our \cd{MyEq} example to:
-\begin{lstlisting}
+we can change our \cd{MyEq} example to the one shown in listing~\ref{lambda}.
+\begin{lstlisting}[caption=Improving type inference using lambdas,label=lambda]
   trait MyEq[A] {
     def myEquals : (A => A => Boolean) = a => b => false
   }
@@ -155,7 +160,7 @@ we can change our \cd{MyEq} example to:
   }
 \end{lstlisting}
 This way,
-Type annotations are not required in method implementations anymore. This
+type annotations are not required in method implementations anymore. This
 technique is shown in the port of the EMGM library.
 
 % Discovered: 2014-08-04
@@ -194,7 +199,7 @@ order function.
 So, first of all, in order to encode the a function of type \cd{forall a. Rep[a] => a -> b}
 in Scala, we encode it as an object with an apply method containing the actual
 function.
-\begin{lstlisting}[float=ht,caption=Encoding a universal function]
+\begin{lstlisting}[caption=Encoding a universal function]
   object myfunction {
     def apply[A: Rep](a: A) : b = ...
   }
