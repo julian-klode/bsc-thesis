@@ -31,7 +31,7 @@ Because we want to query and transform salaries, we need to treat salaries
 specially, so we can pattern match on it (otherwise we would need to compare,
 but pattern matching is easier to read):
 
-\lstinputlisting[firstline=24,lastline=26,caption=Salary representation in LIGD,label=src:ligd-company:salary]{scala/src/ligd-company.scala}
+\lstinputlisting[firstline=24,lastline=26,float=ht,caption=Salary representation in LIGD,label=src:ligd-company:salary]{scala/src/ligd-company.scala}
 
 Finally, the \cd{DUnit} and \cd{Dept} types are mutually recursive. Simply
 using \cd{rType} here as we have done for the other types would not work due
@@ -46,7 +46,7 @@ the representations. For the second issue, we can simply define \cd{rDUnit} in
 terms of \cd{RType} instead of \cd{rType}. This makes the reference to \cd{rDept}
 lazy and thus allows it to be used here.
 
-\lstinputlisting[firstline=34,lastline=43,caption=Mutually recursive representations,label=src:ligd-company:mutual]{scala/src/ligd-company.scala}
+\lstinputlisting[firstline=34,lastline=43,float=ht,caption=Mutually recursive representations,label=src:ligd-company:mutual]{scala/src/ligd-company.scala}
 
 \begin{example}[Query: Summing all salaries]
 
@@ -57,7 +57,7 @@ against \cd{RType} match against \cd{RSalary}:
 \lstinputlisting[firstline=49,lastline=59,caption=Summing salaries in LIGD (manually),label=src:ligd-company:sumSalaryOld]{scala/src/ligd-company.scala}
 
 We can however also use the generic fold we implemented earlier, the definition
-becomes a single line of code then:
+then becomes a single line of code:
 
 \lstinputlisting[firstline=70,lastline=70,caption=Summing salaries in LIGD (fold),label=src:ligd-company:sumSalary]{scala/src/ligd-company.scala}
 
@@ -100,14 +100,17 @@ of those types.
 
 \lstinputlisting[firstline=38,lastline=58,caption=GenericCompany,label=src:emgm-company:GenericCompany,style=breaklines]{scala/src/emgm-company.scala}
 
-Now we need some boilerplate to have implicit \cd{GRep} instances:
+Now we need some boilerplate to have implicit \cd{GRep} instances, as shown
+in listing~\ref{src:emgm-company:GRep}.
 \lstinputlisting[firstline=61,lastline=75,caption=Implicit instances of \cd{GRep},label=src:emgm-company:GRep]{scala/src/emgm-company.scala}
 
 \begin{example}[Query: Summing all salaries]
-Summing all salaries works as expected by using a very simple definition:
+Summing all salaries works as expected by using a very simple (although
+verbose) definition:
 \lstinputlisting[firstline=99,lastline=116,caption=Summing salaries in EMGM,label=src:emgm-company:sumSalary]{scala/src/emgm-company.scala}
 \end{example}
 
+\clearpage
 \begin{example}[Transformation: Increase all salaries]
 It's straight forward to implement this in EMGM, although the definition is
 very verbose.
@@ -115,15 +118,15 @@ very verbose.
 \end{example}
 
 \subsection{Uniplate}
-
+Uniplate is applicable here, and as promised in chapter 3, it has the shortest
+solutions, due to its unique approach.\footnote{Not counting type representations}
 
 \begin{example}[Query: Summing all salaries]
  Trivial to do in uniplate: Get all salaries and fold over them:
 \begin{lstlisting}
-  def sumSalary[C](self: C)(implicit bp: Biplate[C, Salary]) =
-    universeBi(self).foldLeft(0.0F)((f, s) => f + s.salary)
+  def sumSalary[C](self: C)(implicit bp: Biplate[C, Salary])
+    = universeBi(self).foldLeft(0.0F)((f, s) => f + s.salary)
 \end{lstlisting}
-
 \end{example}
 
 \begin{example}[Transformation: Increase all salaries]
@@ -139,17 +142,15 @@ very verbose.
 
 Using shapeless is much easier than using our self-created libraries because
 there is no need to create type representations manually, shapeless takes care
-of that for us. As such, this subsection will be short. On the other hand, since
-it is not easy to figure out what shapeless does, debugging issues becomes
-harder.
+of that for us.
 
 \begin{example}[Query: Summing all salaries]
-In shapeless, a query is made using the combinator \cd{everything}.
+We can simply use the \cd{everything} combinator presented in chapter 3.
 
 \lstinputlisting[firstline=77,lastline=85,caption=Summing salaries in Shapeless]{scala/src/shapeless.scala}
 
-The \cd{everything} combinator consists of two parts: A traversal function
--- here: \cd{extractSalary} -- that extracts the types we are interested in,
+To recall, the \cd{everything} combinator consists of two parts: A traversal function,
+here \cd{extractSalary}, that extracts the types we are interested in,
 and a function to combine the results from the traversal, such as the
 \cd{addFloat} here.
 \end{example}
