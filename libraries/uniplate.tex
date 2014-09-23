@@ -2,9 +2,9 @@
 \summary{Not feasible without macros or code generators and fails generic equality test}
 
 Uniplate is a library that differentiates between two basic type of
-objects: Uniplates and Biplates. Uniplates are simple recursive types
+objects: uniplates and biplates. Uniplates are simple recursive types
 like terms or expressions, which form a graph where all inner nodes have
-the same common supertype. Biplates are types that contain other Uniplates,
+the same common supertype. Biplates are types that contain other uniplates,
 for example, a \cd{List a} has a \cd{Biplate List a}.
 
 \subsection{Uniplates}
@@ -12,12 +12,11 @@ The \cd{Uniplate} type class, shown in listing~\ref{src:uniplate:Uniplate}
 describes recursive types like terms and expressions. Its only primitive
 operation is the \cd{uniplate()} method.
 
-\lstinputlisting[firstline=38,lastline=56,label=src:uniplate:Uniplate,caption=The Uniplate type class (and various additional functions),style=breaklines]{scala/src/uniplate.scala}
+\lstinputlisting[firstline=38,lastline=56,float=ht,label=src:uniplate:Uniplate,caption=The Uniplate type class (and various additional functions),style=breaklines]{scala/src/uniplate.scala}
 
 The \cd{uniplate()} method takes an object of type \cd{T} and returns a tuple
 of all direct children of the same type and a function that constructs a new \cd{T}
 from a list of children of the same type.
-
 
 There are also several more functions that can be defined on top of \cd{uniplate()}.
 
@@ -45,14 +44,17 @@ could be written as:
 
     val expressionWithoutSub = transform(removeSub)(expression)
 \end{lstlisting}
+The function \cd{removeSub} could also match other types and do other substitutions,
+it is not limited to a single sub-type. \qed
 \end{example}
 
-The \cd{descend()} function applies a top-down transformation.
-
-The \cd{rewrite()} function applies a transformation until some sort of
+Finally, the \cd{descend()} function applies a top-down transformation, and the \cd{rewrite()} function applies a transformation until some sort of
 normal form has been reached. The passed function returns a \cd{Some} if
 it applied a transformation to an object and a \cd{None} if the input was
 in normal form already.
+
+
+
 
 In the original uniplate paper~\cite{DBLP:conf/haskell/MitchellR07}, Mitchell
 and Runciman introduce additional functions, but those are not implemented
@@ -76,22 +78,24 @@ with one caveat: the passed function is not polymorphic.
 
 \begin{example}[Minimum integer]
 A function that calculates the minimum integer in a biplate can be defined
-by folding \cd{scala.math.min} over the universe of the biplate.
+by folding \cd{scala.math.min} over the universe of the biplate, as shown
+in listing~\ref{src:uniplate:minInt}.\qed
 
 \lstinputlisting[firstline=110,lastline=111,label=src:uniplate:minInt,caption=Uniplate minInt]{scala/src/uniplate.scala}
+
 \end{example}
 
 \subsection{Limitations and Advantages compared to other solutions}
 Uniplate can theoretically be ported from Haskell to Scala, but it is not
-feasible to do without a way to automatically generate instances of the
-\cd{Biplate} type class, because the amount of biplates needed is quadratic
-to the number of types.
+feasible to do so without a way to automatically generate instances of the
+\cd{Biplate} type class, because defining instances manually is too complex
+(quadratic).
 
 Due to the way uniplate works, it is not possible to implement a generic
-equality function for two biplate objects. Because biplates work by only
-looking at a subset of the types elements (for example, a \cd{Biplate[Company,Salary]}
-only cares about Salaries in a company -- not enough to compare two companies). Even
-for Uniplates, defining a generic equality function won't work because we
+equality function for two biplate objects. Because biplates work by looking only
+at a subset of the types elements (for example, a \cd{Biplate[Company,Salary]}
+only cares about salaries in a company -- not enough to compare two companies). Even
+for uniplates, defining a generic equality function won't work because we
 only have access to the objects themselves and not to members of a different
 type.
 
