@@ -1,5 +1,6 @@
 \section{Library overview}
-\begin{table}[ht]
+\begin{table}[b]
+  \centering
   \begin{tabular}{l|llll}
        & LIGD & EMGM & Uniplate & Shapeless \\
                  \hline
@@ -44,9 +45,7 @@ extensibility. EMGM supports extensibility out of the box, but is more verbose
 to write than LIGD. Generic functions in Uniplate are not extensible, mostly
 because they are just short functions based on combinators. In Shapeless, the
 situation is similar, but there is one difference: The polymorphic functions
-can be extended, allowing new ad-hoc cases to some extent: Some parts, like
-the code that applies that function using a combinator needs to be changed to
-include the new combinator.
+can be extended, allowing new ad-hoc cases.
 
 \paragraph{First class generic functions}
 LIGD does not directly first class generic functions, they can be encoded as
@@ -54,8 +53,9 @@ objects with an apply method however. This is a limitation of the Scala
 language, not a limitation of LIGD itself. See section~\ref{universal-types}
 for a discussion on the issue. EMGM supports first class generics to some
 extend, but is complicated. Uniplate does not support a really useful form
-of first class generics. Shapeless uses Poly objects to represent generic
-functions, so sub-classing their classes makes them extensible.
+of first class generics. Shapeless mostly uses combinators, but
+all generic functions are \cd{Poly} instances that can be passed around,
+although using them requires some more implicit objects.
 
 \paragraph{Automatic representations}
 Only shapeless supports automatic representations. It should be possible to
@@ -78,7 +78,7 @@ when debugging.
 EMGM is slightly less easy to use than LIGD. First of all, it requires more
 code to achieve the same result; secondly, functions need to be extended to
 sub-universes; and thirdly, writing the generic function in a visitor-like
-way is more complicated, at least in my opinion.
+way is going to be more complicated for most people.
 
 Shapeless is very easy to use once the basics are understood. But Shapeless
 also provides more complex features and makes use of more advanced language
