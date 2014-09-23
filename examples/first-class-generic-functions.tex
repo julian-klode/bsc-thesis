@@ -33,8 +33,8 @@ some wrapper functions might pass additional fixed arguments to the method
 in the \cd{GRep} instance, \cd{min} for example passes \cd{Int.MaxValue} as
 an argument.
 
-The second way is less clean, because forcing functions to be written as objects
-is ugly, and because the higher-order functions can get quite long, due to the
+The second way is less clean, because writing functions as objects
+does not looks, and because the higher-order functions can get quite long due to the
 use of higher-kinded types -- which need to be written as explicit parameters,
 whereas the \cd{Rep} instances in LIGD can be passed using a shorthand syntax.
 
@@ -45,12 +45,9 @@ It is possible to encode all sorts of functions using a similar encoding
 as used in LIGD to make them first class objects. Then it is possible to write
 higher order functions that can apply them. Because \cd{Biplate} objects only offer
 a limited a view at objects, though, this does not seem very worthwhile. For
-example, we cannot write a \cd{gmapQ} like in the other tested libraries, because
+example, we cannot write a \cd{gmapQ} like we did for LIGD, because
 \cd{Biplate} objects only look at one type of `element' within a containing
 type.
-
-In addition, we could not even write something like \cd{gshow} in Uniplate,
-because there's no way to look at all arguments of a constructor.
 
 
 \subsection{Shapeless}
