@@ -12,7 +12,7 @@ will see later.
 
 Listing~\ref{ligd-base} shows the basic \cd{Rep} trait with instances for
 scalar types, sums (represented using \cd{Either}), and products (represented
-using \cd{Tuple2}). As explained in the previous chapter, we use implicit
+using \cd{Tuple2}). As explained in the previous chapter, we use \cd{implicit}
 here to allow the compiler to automatically infer the correct \cd{Rep}
 instance for generic function calls. This  utilises a simple helper function called \cd{rep},
 shown in listing~\ref{src:ligd:rep}.
@@ -45,27 +45,25 @@ This is very easy, but looks inconsistent in usage. Another approach is to
 not use a case class and provide a companion object with custom \cd{apply}
 and \cd{unapply} methods. Listing~\ref{ligd-rtype} shows how this is
 implemented.
-\lstinputlisting[firstline=76,lastline=90,float=ht,caption=Implementation of RType,label=ligd-rtype]{scala/src/ligd.scala}
+\lstinputlisting[firstline=76,lastline=90,caption=Implementation of RType,label=ligd-rtype]{scala/src/ligd.scala}
 
 \begin{example}[Lists]
 In order to represent a list, we encode the
 list as a sum of products, or to be precise, we want to encode a \cd{List[A]}
 as: \cd{Either[Unit, (A, List[A])]}. In order to do this, we need functions
 that convert from \cd{List[A]} to \cd{Either[Unit, (A, List[A])]} and
-vice versa. An implementation of those functions is given in figure~\ref{ligd-rlist}.
-%-- We can then define an RType instance as:
-%\lstinputlisting[firstline=104,lastline=108]{scala/src/ligd.scala}
-
+vice versa. An implementation of those functions is given in listing~\ref{ligd-rlist}.
 \lstinputlisting[firstline=96,lastline=117,float=ht,caption=Implementation of rList,label=ligd-rlist]{scala/src/ligd.scala}
 
-Note how the first parameter of \cd{RType} is recursive.
+The first parameter of \cd{RType} is recursive, allowing us to describe list
+of arbitrary length.
 
 There is one issue with this representation though: It leads to deep recursion,
-potentially causing a stack overflow in functions using it.
+potentially causing a stack overflow in functions using it.\qed
 \end{example}
 
 \subsection{Writing generic functions}
-Writing generic functions using LIGD is simple. We just pass the object(s)
+Writing generic functions using LIGD is easy. We just pass the object(s)
 we are interested in to the function, along with their type representations,
 and then pattern match on the type representations.
 
@@ -84,7 +82,7 @@ though: Scala will not consider the calls to \cd{geq} eligible for tail call
 optimization, as the type parameters differs. The only ways to deal with deeply
 nested structures are thus manual stack management or trampolines\footnote{The
 \cd{scala.util.control.TailCalls} object makes trampolines easy to write}. This
-does not matter much in this chapter.
+does not matter much in this chapter.\qed
 \end{example}
 
 
@@ -95,13 +93,14 @@ instances for generic functions, we make use of Scala's implicit values.
 
 
 \subsubsection{Ad-hoc cases using subtyping}
-A key difference that extends the functionality of LIGD in Scala is that
-Scala permits sub-typing. If we look at our definition of RType, we see
-that it is not \cd{sealed}, allowing it to be extended by subclasses.
+A key difference that makes it possible to extend the functionality of LIGD in Scala is
+sub-typing. If we look at our definition of RType, we see
+that it is not \cd{sealed}, allowing it to be extended by subclasses; while the
+set of direct subclasses of \cd{Rep} is still fixed, thus not breaking any
+existing code.
 
 We can use this to create custom sub classes for types we are interested
-in, and pattern match on them. Because those are sub classes of \cd{RType},
-existing code will be unaffected by new types.
+in, and pattern match on them.
 
 An example for this is the list type. Because we extended \cd{RType} as
 \cd{RList} we can now write a generic function that finds all lists of a
@@ -117,7 +116,7 @@ It turns out that if we change the way we write the generic function slightly,
 we can actually extend it with new special cases. The changes are very simple:
 
 \begin{enumerate}
-  \item Convert the function into a class with an apply method containing the
+  \item Convert the function into a class (or a trait) with an apply method containing the
         existing function and replace all recursive calls to the functions with
         calls to apply.
   \item Provide an object that extends that class, this can then be called like
@@ -125,14 +124,17 @@ we can actually extend it with new special cases. The changes are very simple:
 \end{enumerate}
 
 We can now easily extend that `function', by extending the class and overriding
-the apply method, matching on the cases we are interested in and deferring the
+the \cd{apply} method, matching on the cases we are interested in and deferring the
 remaining cases to the implementation in the super class.
 
+\begin{example}[Extending generic equality with a special case for lists]
 For example, if we transform \cd{geq} according to those rules, we can
 easily extend it with a special case for lists, as shown in listing~\ref{src:ligd-extensible:geqlist}.\footnote{The complete example can be found in
 the  file \texttt{src/ligd-extensible.scala}~\cite{src}}
-\lstinputlisting[firstline=76,lastline=85,float=ht,caption=Extended Generic Equality in LIGD,label=src:ligd-extensible:geqlist]{scala/src/ligd-extensible.scala}
-
+\lstinputlisting[firstline=76,lastline=85,caption=Extended Generic Equality in LIGD,label=src:ligd-extensible:geqlist]{scala/src/ligd-extensible.scala}
+Other code can now call \cd{geqlist} instead of \cd{geq} and benefit from a
+faster solution. \qed
+\end{example}
 A similar approach is used in `Lightweight modular staging'~\cite{DBLP:conf/gpce/RompfO10}\cite{DBLP:journals/cacm/RompfO12},
 although based on traits rather than classes, and not using an \cd{apply}
 method -- thus making it easily possible to combine functions using inheritance
@@ -159,9 +161,10 @@ against each other. This is quite useful, though, as it allows to
 implement simple variants of generic operations that look for objects
 of a specific type in another object, such as folds.
 
-For this to work, it is important to always use values for \cd{Rep} instances
-for non-parameterized types, so that they compare correctly without a custom
-\cd{equals()} method.
+For this to work, it is important to always use values (and not functions)
+for \cd{Rep} instances for non-parameterized types, so that they compare
+correctly without a custom \cd{equals()} method.
+
 When representing parameterized types such as Lists, we can create a subclass
 of RType with Rep parameters for the parameters of the type. We can then
 define a custom \cd{equals()} method, as seen in listing~\ref{rmycustomtype}.
@@ -178,39 +181,40 @@ define a custom \cd{equals()} method, as seen in listing~\ref{rmycustomtype}.
 
 
 \begin{example}[Use case: folds]
-  By implementing equality on types, we can implement a sort of fold like
-  function.
+  By implementing equality on types, we can implement a \cd{fold}-like
+  function, as shown in listing~\ref{src:ligd:gfoldl}.
 
-  \lstinputlisting[firstline=128,lastline=135,float=ht,caption=LIGD folding,label=src:ligd:gfoldl,style=breaklines]{scala/src/ligd.scala}
+  \lstinputlisting[firstline=128,lastline=135,caption=LIGD folding,label=src:ligd:gfoldl,style=breaklines]{scala/src/ligd.scala}
 
   This is the most generic way to define the fold. A less generic way would be
   to restrict \cd{C} to a type that can contain objects of type \cd{N}. One way
   to deal with normal container types, is to make \cd{C} a type constructor,
-  taking \cd{N} as its parameter.
+  taking \cd{N} as its parameter, as shown in listing~\ref{src:ligd:foldl}.
 
-  \lstinputlisting[firstline=157,lastline=157,float=ht,caption=Simple LIGD folding,label=src:ligd:foldl,style=breaklines]{scala/src/ligd.scala}
+  \lstinputlisting[firstline=157,lastline=157,caption=Simple LIGD folding,label=src:ligd:foldl,style=breaklines]{scala/src/ligd.scala}
 
   Furthermore, re-ordering the parameters as done in \cd{foldl} allows the
   scala compiler to infer the type of a lambda passed as the third argument,
-  allowing us to omit type annotations for it.
+  allowing us to omit type annotations for it. \qed
 \end{example}
 
 \begin{example}[Use case: transformation combinator]
-  Another way we can use equality comparison is to implement a transformation
+  Another way we can use equality comparison is to implement a
   combinator that performs a transformation\footnote{Similar to \cd{everywhere}
   of Shapeless and \cd{transformBi} of Uniplate}.
 
   \lstinputlisting[firstline=228,lastline=235,float=ht,caption=LIGD `everywhere',label=src:ligd:everywhere,style=breaklines]{scala/src/ligd.scala}
 
-  This implementation does not recurse into objects of the target type, depending
-  on the task, this might be an even better idea (example: an object representing
-  an expression consisting of sub-expressions).
+  This implementation does not recurse into objects of the target type; depending
+  on the task, this might be a better idea, for example, for transforming
+  syntax trees. \qed
 \end{example}
 
 \subsection{Variant: HLIGD -- LIGD with heterogeneous lists}
-A new variant of LIGD included in the source code \footnote{See \texttt{hlists.scala} and \texttt{hligd.scala} in the \texttt{src} directory~\cite{src}}
+A new variant of LIGD included in the source code\footnote{See \texttt{hlists.scala} and \texttt{hligd.scala} in the \texttt{src} directory~\cite{src}}
 uses heterogeneous lists instead of tuples for representing products.
-This variant is more a proof of concept rather than a finished version, though.
+This variant is more a proof of concept rather than a finished version, though,
+the current encoding might not be the best option.
 
 Heterogeneous lists allow for a more natural representation of constructors
 compared to nested pairs. In addition, they make it possible to easily implement
