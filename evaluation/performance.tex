@@ -1,31 +1,9 @@
-\section{Performance benchmark results}
-
-\begin{table}[ht]
-\input{bench}
-\caption{Benchmark results}
-\label{bench}
-\end{table}
-
-The performance of the libraries was tested by running various tests on them,
-the measurements are done using scalameter 0.6 with 150 runs, default warmer,
+\section{Performance benchmark}
+The performance of the libraries was tested by running various tests on them.
+\subsection{Setup}
+The measurements are done using scalameter 0.6 with 150 runs, default warmer,
 and as the measurer, \cd{Measurer.IgnoringGC with Measurer.OutlierElimination}
-was used.
-
-\begin{table}[ht]
-\begin{tabular}{l|l}
-    Scala & 2.11.2 \\
-    JRE   & OpenJDK Runtime Environment (IcedTea 2.5.2) (7u65-2.5.2-4) \\
-    JVM   & OpenJDK 64-Bit Server VM (build 24.65-b04, mixed mode) \\
-    Arguments & -J-Xss1024m (increased stack size to 1GB) \\
-    OS    & Debian GNU/Linux `unstable' (2014-09-21), kernel 3.16.2 \\\hline
-    CPU   & Intel Core i5-3320M (2.6 GHz, 3.3 GHz turbo boost) \\
-    RAM   & 8 GB
-\end{tabular}
-\caption{Benchmark environment}
-\end{table}
-
-The tests that were run were:
-
+was used. Those tests were:
 \begin{description}
     \item[company]The `company' test increases the salary in a company
 object. The company consists of a list of $n$ departments, each department has
@@ -40,6 +18,31 @@ $n$ employees and $1$ manager, making a total of $n^{2} + n$ salaries.
     \item[sum] The `sum' benchmark calculates the sum of a list.
 \end{description}
 
+The tests were performed on a single ThinkPad X230 running the Hotspot Server
+VM on Debian GNU/Linux. More details can be found in the table below.
+
+\begin{table}[b]
+    \centering
+\begin{tabular}{l|l}
+    Scala & 2.11.2 \\
+    JRE   & OpenJDK Runtime Environment (IcedTea 2.5.2) (7u65-2.5.2-4) \\
+    JVM   & OpenJDK 64-Bit Server VM (build 24.65-b04, mixed mode) \\
+    Arguments & -Xss64m (increased stack size to 64 MB) \\
+    OS    & Debian GNU/Linux `unstable' (2014-09-21), kernel 3.16.2 \\\hline
+    CPU   & Intel Core i5-3320M (2.6 GHz, 3.3 GHz turbo boost) \\
+    RAM   & 8 GB
+\end{tabular}
+\caption{Benchmark environment}
+\end{table}
+
+\clearpage{}
+\subsection{Results}
+\begin{table}[t]
+\centering
+\input{bench}
+\caption{Benchmark results}
+\label{bench}
+\end{table}
 The `min' and `sum' tests should show the same performance, as both are the
 same basic type of fold. They use the longer list of the `geq' benchmark.
 
@@ -48,6 +51,6 @@ company benchmark, but faster in the other ones that only use lists which seems
 to indicate that shapeless is more optimised for lists than LIGD and EMGM.
 
 The HLIGD benchmark behaves like LIGD for the company benchmark, but is as fast
-a the direct version for the other cases, because HLIGD directly uses
+as the direct version for the other cases, because HLIGD directly uses
 \cd{foldLeft} on sequences. Any time difference compared to the direct code is
 noise.
