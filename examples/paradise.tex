@@ -39,7 +39,7 @@ to two reasons: First, the Scala compiler would not be able to infer the types;
 and second, because the implicit \cd{Rep} of \cd{rType} is not lazy, there would
 be either endless recursion (if both were defined using \cd{def}) or \cd{rDept}
 would be \cd{null} in the definition of \cd{rDUnit} because \cd{rDept} is defined
-after \cd{rDUnit} and thus not yet initialized.
+after \cd{rDUnit} and thus not yet initialised.
 
 Fixing this is simple: For the first issue, we explicitly specify the types of
 the representations. For the second issue, we can simply define \cd{rDUnit} in

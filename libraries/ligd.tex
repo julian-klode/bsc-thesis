@@ -162,14 +162,14 @@ implement simple variants of generic operations that look for objects
 of a specific type in another object, such as folds.
 
 For this to work, it is important to always use values (and not functions)
-for \cd{Rep} instances for non-parameterized types, so that they compare
+for \cd{Rep} instances for non-parameterised types, so that they compare
 correctly without a custom \cd{equals()} method.
 
-When representing parameterized types such as Lists, we can create a subclass
+When representing parameterised types such as Lists, we can create a subclass
 of RType with Rep parameters for the parameters of the type. We can then
 define a custom \cd{equals()} method, as seen in listing~\ref{rmycustomtype}.
 
-\begin{lstlisting}[float,caption=Pattern for representing parameterized types,label=rmycustomtype]
+\begin{lstlisting}[float,caption=Pattern for representing parameterised types,label=rmycustomtype]
   class RMyCustomType[T1, ...](r1: Rep[T1], ...) {
     override def equals(b: Any) : Boolean = b match {
       case RMyCustomType(r1, ...) => r1 == this.r1 &&

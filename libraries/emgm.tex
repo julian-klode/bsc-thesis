@@ -64,14 +64,14 @@ if it is not handled by the generic function. We can thus use that extra
 method (override it) or ignore it (and treat it using sums and products).
 
 \begin{example}[Generic equality extended for lists]
-An example for using it would be a generic equality function with an optimized
+An example for using it would be a generic equality function with an optimised
 version for lists, like figure~\ref{src:emgm:GEqList} shows.
 \lstinputlisting[firstline=252,lastline=269,label=src:emgm:GEqList,caption=Generic equality specialised to lists]{scala/src/emgm.scala}
 If we do not override \cd{list}, it would simply use the isomorphism. \qed
 \end{example}
 
 What we are still missing is a sort of dispatcher, like \cd{Rep} in `Generics
-for the masses', but this time, \cd{rep} should not be parameterized over \cd{G},
+for the masses', but this time, \cd{rep} should not be parameterised over \cd{G},
 rather the type itself should be -- the resulting \cd{GRep} trait defines a
 representation of a type for a specific generic function, rather than for all
 generic functions.
