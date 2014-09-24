@@ -1,17 +1,17 @@
 \section{Shapeless}
 \label{shapeless}
 
-Shapeless is an already existing Scala library that started as a port of Scrap your
-Boilerplate~\cite{DBLP:conf/tldi/LammelJ03} from Haskell. In the mean time however,
+Shapeless is an already existing Scala library that started as a port of `Scrap your
+Boilerplate'~\cite{DBLP:conf/tldi/LammelJ03} from Haskell. In the mean time however,
 it evolved a bit further and now covers topics like heterogeneous lists and
 zippers, among other things.
 
 Compared to the LIGD, EMGM, and Shapeless ports, Shapeless is far more
 advanced. It automatically works on custom Scala types without having to
 write instances of any type class, and it also uses several advanced programming
-techniques like dependent types for its implementation. This means that using
-Shapeless is easy, as long as there is no error. Debugging errors on the other
-hand can be quite complicated.
+techniques, like dependent types, for its implementation. This means that using
+Shapeless is easy, as long as there is no error. Debugging errors, on the other
+hand, can be quite complicated.
 
 \subsection{Polymorphic functions}
 Shapeless provides support for writing polymorphic functions in the
@@ -45,7 +45,7 @@ extracts objects we are interested in, the second one combines those objects
 to a result -- it basically is a fold.
 
 \begin{example}[Calculating the product of all integers in an object]
-  If we combine \cd{int1} and \cd{prod} from the previous subsection we can
+  If we combine \cd{int1} and \cd{prod} from the previous subsection, we can
   easily calculate the product of all integers in a data structure (recursively).
   \lstinputlisting[firstline=71,lastline=71,label=src:shapeless:product,caption=\cd{product} -- Product of all integers in an object]{scala/src/shapeless.scala}
 \end{example}
@@ -87,7 +87,7 @@ list using the \cd{::} operator. The empty list is the object \cd{HNil}.
 \subsection{Zippers}
 Shapeless provides an implementation of generic zippers. A generic zipper is
 a data structure that represents a moment in the traversal of another data
-structure like a tree. It has operations like \cd{left}, \cd{right}, \cd{down},
+structure, such as a tree. It has operations like \cd{left}, \cd{right}, \cd{down},
 and \cd{up} for navigating through the object and \cd{get} to get the object
 at the current position.
 

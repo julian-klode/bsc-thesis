@@ -21,7 +21,7 @@ a generic show function might use this to pretty print data types.
 \begin{example}[Generic equality]
 Imagine we want to check arbitrary objects of the same type for equality.
 Our type \cd{G[\_]} must have a function that accepts two
-value of the type given by the first parameter, and returns a boolean
+values of the type given by the first parameter, and returns a boolean
 -- see Listing~\ref{src:emgm:GEq}.
 \lstinputlisting[firstline=173,lastline=193,label=src:emgm:GEq,float=ht,caption=A generic equality function in GM]{scala/src/emgm.scala}
 
@@ -70,8 +70,8 @@ version for lists, like figure~\ref{src:emgm:GEqList} shows.
 If we do not override \cd{list}, it would simply use the isomorphism. \qed
 \end{example}
 
-What we are still missing is a sort of dispatcher, like \cd{Rep} in Generics
-for the masses, but this time, \cd{rep} should not be parameterized over \cd{G},
+What we are still missing is a sort of dispatcher, like \cd{Rep} in `Generics
+for the masses', but this time, \cd{rep} should not be parameterized over \cd{G},
 rather the type itself should be -- the resulting \cd{GRep} trait defines a
 representation of a type for a specific generic function, rather than for all
 generic functions.

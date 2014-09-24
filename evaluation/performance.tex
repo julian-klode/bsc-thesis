@@ -10,7 +10,7 @@ object. The company consists of a list of $n$ departments, each department has
 $n$ employees and $1$ manager, making a total of $n^{2} + n$ salaries.
 
     \item[geq] The `geq' benchmark compares two lists for equality, where the
-               the lists are consecutive ranges $[1, n^{2}]$ and $[1, n^{2} +1]$ of
+               lists are consecutive ranges $[1, n^{2}]$ and $[1, n^{2} +1]$ of
                integers.
 
     \item[min] The `min' benchmark calculates the minimum of a list.
@@ -47,7 +47,7 @@ The `min' and `sum' tests should show the same performance, as both are the
 same basic type of fold. They use the longer list of the `geq' benchmark.
 
 Apparently, LIGD and EMGM perform roughly the same. Shapeless is slower in the
-company benchmark, but faster in the other ones that only use lists which seems
+company benchmark, but faster in the other ones that only use lists, which seems
 to indicate that shapeless is more optimised for lists than LIGD and EMGM.
 
 The HLIGD benchmark behaves like LIGD for the company benchmark, but is as fast

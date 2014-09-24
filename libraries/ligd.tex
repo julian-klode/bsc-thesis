@@ -4,7 +4,7 @@
 
 LIGD~\cite{Cheney:2002:LIG:581690.581698} is a simple library that provides a \cd{Rep} trait that describes
 the structure of a type using sums, products, and scalar values.\footnote{This
-version is equivalent from the first encoding in that paper, but actually
+version is equivalent to the first encoding in that paper but actually
 derived from the `Comparing libraries for generic programming in haskell'
 paper~\cite{DBLP:conf/haskell/RodriguezJJGKO08}}
 This version of LIGD is more powerful than the original one, though, as we
@@ -55,7 +55,7 @@ that convert from \cd{List[A]} to \cd{Either[Unit, (A, List[A])]} and
 vice versa. An implementation of those functions is given in listing~\ref{ligd-rlist}.
 \lstinputlisting[firstline=96,lastline=117,float=ht,caption=Implementation of rList,label=ligd-rlist]{scala/src/ligd.scala}
 
-The first parameter of \cd{RType} is recursive, allowing us to describe list
+The first parameter of \cd{RType} is recursive, allowing us to describe lists
 of arbitrary length.
 
 There is one issue with this representation though: It leads to deep recursion,
@@ -79,7 +79,7 @@ and in the second case, it would need to manage stack itself or be tail recursiv
 
 Making the function tail-recursive seems straight forward. There is one issue,
 though: Scala will not consider the calls to \cd{geq} eligible for tail call
-optimization, as the type parameters differs. The only ways to deal with deeply
+optimization, as the type parameter differs. The only ways to deal with deeply
 nested structures are thus manual stack management or trampolines\footnote{The
 \cd{scala.util.control.TailCalls} object makes trampolines easy to write}. This
 does not matter much in this chapter.\qed

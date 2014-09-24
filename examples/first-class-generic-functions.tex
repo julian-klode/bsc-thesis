@@ -34,7 +34,7 @@ in the \cd{GRep} instance, \cd{min} for example passes \cd{Int.MaxValue} as
 an argument.
 
 The second way is less clean, because writing functions as objects
-does not looks, and because the higher-order functions can get quite long due to the
+does not look good, and because the higher-order functions can get quite long due to the
 use of higher-kinded types -- which need to be written as explicit parameters,
 whereas the \cd{Rep} instances in LIGD can be passed using a shorthand syntax.
 
@@ -44,7 +44,7 @@ whereas the \cd{Rep} instances in LIGD can be passed using a shorthand syntax.
 It is possible to encode all sorts of functions using a similar encoding
 as used in LIGD to make them first class objects. Then it is possible to write
 higher order functions that can apply them. Because \cd{Biplate} objects only offer
-a limited a view at objects, though, this does not seem very worthwhile. For
+a limited view at objects, though, this does not seem very worthwhile. For
 example, we cannot write a \cd{gmapQ} like we did for LIGD, because
 \cd{Biplate} objects only look at one type of `element' within a containing
 type.

@@ -4,11 +4,11 @@ This chapter introduces some basic concepts for translating Haskell code
 to Scala. Most of these concepts were explained by Oliveira and Gibbons~\cite{scalagp}, this
 chapter summarizes them.
 
-\section{Type classes and Instances}
+\section{Type classes and instances}
 
 Haskell has a concept of type classes and instances, whereas Scala offers
 traits. Traits differ from type classes in that their methods always contain
-an implicit \cd{this} object, that is, they combine data and functions;
+an implicit \cd{this} object, that is, they combine data and functions
 whereas type classes do not reference any data.
 
 \textbf{Question:} Given a type class like
@@ -31,8 +31,8 @@ to the following trait:
     def myEquals(b: T) : Boolean = false
   }
 \end{lstlisting}
-In order to implement this trait for a class the class must extend the
-trait and override the methods of the trait:
+In order to implement this trait, a class must extend the
+trait and override its methods:
 \begin{lstlisting}
   class MyInt(val i: Int) extends MyEq[MyInt] {
     override def myEquals(b: MyInt) : Boolean = i == b.i
@@ -41,12 +41,12 @@ trait and override the methods of the trait:
 This already shows one deficiency of the traits approach: We cannot
 implement a trait for a type without modifying that type itself.
 
-Oh the other hand, writing a function using this approach is straight forward:
+On the other hand, writing a function using this approach is straight forward:
 \begin{lstlisting}
   def notEquals[T <: MyEq[T]](a: T, b: T) = !a.myEquals(b)
 \end{lstlisting}
 
-This style makes it easy to specify contexts, so for example, if we have
+This style makes it easy to specify contexts; for example, if we have
 a class \cd{MyOrd} for ordering that also requires equality, we can write
 \begin{lstlisting}
   trait MyOrd[T] extends MyEq[T] {
@@ -188,7 +188,7 @@ Haskell libraries often use universal types like:
   forall a. Rep a => a -> String
 \end{lstlisting}
 Representing such types in Scala is a bit more complicated. We cannot use
-functions -- even generic ones, because the Scala
+functions -- even generic ones -- because the Scala
 compiler wants to bind the \cd{a} type as soon as we pass the function to
 another function.
 
@@ -196,7 +196,7 @@ There are two alternative encodings, however. Both use the same encoding for
 the functions, the difference is the encoding of the parameter type of a higher
 order function.
 
-So, first of all, in order to encode the a function of type \cd{forall a. Rep[a] => a -> b}
+So, first of all, in order to encode the a function of the type \cd{forall a. Rep[a] => a -> b}
 in Scala, we encode it as an object with an apply method containing the actual
 function.
 \begin{lstlisting}[caption=Encoding a universal function]

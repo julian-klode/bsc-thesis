@@ -21,7 +21,7 @@ Given the data structures above and our implementation of LIGD that supports
 subtyping \cd{RType}, implementing both operations is fairly straight forward.
 
 First of all, the type representations. For the data types \cd{Person},
-\cd{Employee}, and we can use the simplest form of definition,
+\cd{Employee}, and \cd{Company} we can use the simplest form of definition,
 by using the \cd{rType} function we added to our LIGD implementation.
 
 \lstinputlisting[firstline=29,lastline=30,frame=t,caption={Person, Employee, and Company representations in LIGD},label=src:ligd-company:stuff,style=breaklines]{scala/src/ligd-company.scala}
@@ -56,7 +56,7 @@ against \cd{RType} match against \cd{RSalary}:
 
 \lstinputlisting[firstline=49,lastline=59,caption=Summing salaries in LIGD (manually),label=src:ligd-company:sumSalaryOld]{scala/src/ligd-company.scala}
 
-We can however also use the generic fold we implemented earlier, the definition
+We can, however, also use the generic fold we implemented earlier, the definition
 then becomes a single line of code:
 
 \lstinputlisting[firstline=70,lastline=70,caption=Summing salaries in LIGD (fold),label=src:ligd-company:sumSalary]{scala/src/ligd-company.scala}
@@ -91,10 +91,10 @@ In any case, both examples are easy to implement.
 
 Implementing the paradise benchmark in EMGM requires more boilerplate compared
 to LIGD. This version is slightly more powerful than the LIGD variant (it
-provides ad-hoc cases for all types in a company, compared ton only \cd{Salary}),
+provides ad-hoc cases for all types in a company, compared to only \cd{Salary}),
 but only because this makes the code more readable.
 
-We first starting by extending \cd{Generic} with new methods for all types of
+We first start by extending \cd{Generic} with new methods for all types of
 company objects. This allows us to write functions with ad-hoc cases for all
 of those types.
 
