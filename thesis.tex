@@ -11,6 +11,7 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{textcomp}
+\usepackage{pdfpages}
 
 % Set the default settings of Komascript for oneside use. With 1cm for the
 % binding, this will result in 2cm inner margin; and 3cm outer margin. This
@@ -96,13 +97,26 @@
 \newtheorem{example}{Example}[subsection]
 
 \begin{document}
+    % Cover (printed outside on the soft cover)
+    \includepdf{cover}
+    \cleardoublepage{}
 
-    % Title page, abstract, toc: Roman page numbers starting at i
-    \pagenumbering{roman}
+    % half title (empty page) - pretend we are a book
+    \newpage
+    \thispagestyle{empty}
+    \mbox{}
+    \cleardoublepage{}
 
+    % Title page
     \maketitle{}
+
+    % Abstract
     \input{abstract}
-    \selectlanguage{english}
+
+    % Table of contents
+    \cleardoublepage
+    \pagenumbering{Roman}
+    \setcounter{page}{1}
     \tableofcontents{}
     \cleardoublepage
 
