@@ -41,7 +41,7 @@ be either endless recursion (if both were defined using \cd{def}) or \cd{rDept}
 would be \cd{null} in the definition of \cd{rDUnit} because \cd{rDept} is defined
 after \cd{rDUnit} and thus not yet initialized.
 
-Fixing this is simple: For the first issue, we explicitly specify the types of
+Fixing this is simple: for the first issue, we explicitly specify the types of
 the representations. For the second issue, we can simply define \cd{rDUnit} in
 terms of \cd{RType} instead of \cd{rType}. This makes the reference to \cd{rDept}
 lazy and thus allows it to be used here.
