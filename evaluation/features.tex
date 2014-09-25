@@ -6,7 +6,7 @@
                  \hline
     Ad-hoc cases & \checkmark$^{+}$ & $\checkmark$ & \checkmark & \checkmark \\
     Multi-parameter functions & \checkmark & \checkmark & ($\times$) & \checkmark{} \\
-    Extensibility & \checkmark $^{+}$ & $\circ$ & $\times$ & $\circ$ \\
+    Extensibility & $\circ^{+}$ & $\circ$ & $\times$ & $\circ$ \\
     First-class generics & \checkmark & $\circ$ & $\circ$ & $\circ$ \\ \hline
     Automatic representations & $\times$ & $\times$ & ($\checkmark$) & \checkmark \\
     Ease of use & \checkmark & $\circ$ & \checkmark & $\circ$
@@ -40,12 +40,13 @@ implement generic equality, because it only looks at parts of objects that
 have a specific type.
 
 \paragraph{Extensibility}
-With the class encoding of functions, LIGD supports
-extensibility. EMGM supports extensibility out of the box, but is more verbose
-to write than LIGD. Generic functions in Uniplate are not extensible, mostly
-because they are just short functions based on combinators. In Shapeless, the
-situation is similar, but there is one difference: the polymorphic functions
-can be extended, allowing new ad-hoc cases.
+EMGM supports extending existing functions directly, but is verbose.
+LIGD, using the class encoding, supports creating new functions that extend
+old functions and override behaviour for some types.
+Generic functions in Uniplate are not extensible, mostly because they are just
+short functions based on combinators.
+Shapeless mostly uses combinators as well but the polymorphic functions can
+be extended, allowing new ad-hoc cases in sub-classes.
 
 \paragraph{First class generic functions}
 LIGD does not directly support first class generic functions, they can be encoded as
