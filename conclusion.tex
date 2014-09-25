@@ -1,6 +1,6 @@
 \chapter{Conclusion}
 Shapeless and LIGD are the best options for generic programming in Scala
-right now. Shapeless provides a much larger feature set, and is also more
+right now. Shapeless provides a much larger feature set, is more
 widely used, and should thus be preferred in production use. Where Uniplate
 is applicable (like, for interpreters), it might make sense to use that
 instead, possibly in combination with Shapeless for deriving instances like
@@ -16,11 +16,12 @@ functions make it an optimal choice for introducing generic programming to
 students.
 
 It would be interesting to look at automatic generation of LIGD representations
-used macros; likewise, an implementation that represents constructors using
+using macros; likewise, an implementation that represents constructors using
 heterogeneous lists also seems a worthwhile idea, opening up new possibilities
 like generic zippers. While an initial prototype of such a library exists in
 the source code of this bachelor thesis\footnote{See \texttt{src/hligd.scala} and
-\texttt{src/hlists.scala}~\cite{src}}, it requires more work to make it work completely.
+\texttt{src/hlists.scala}~\cite{src}}, a more complete solution requires further
+work.
 
 Another topic to look at with regards to LIGD is the handling of lists and
 other container types: Representing them as deeply-nested pairs can cause
