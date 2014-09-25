@@ -95,7 +95,7 @@ instances for generic functions, we make use of Scala's implicit values.
 \subsubsection{Ad-hoc cases using subtyping}
 A key difference that makes it possible to extend the functionality of LIGD in Scala is
 sub-typing. If we look at our definition of RType, we see
-that it is not \cd{sealed}, allowing it to be extended by subclasses; while the
+that it is not \cd{sealed}, allowing it to be extended by subclasses, while the
 set of direct subclasses of \cd{Rep} is still fixed, thus not breaking any
 existing code.
 
@@ -223,5 +223,5 @@ to a zipper.
 
 Additionally, this variant of LIGD introduces a new basic type of representation
 for sequences, allowing lists, sets, and other types to be represented more
-efficiently than with a nested encoding; thus reducing the number of recursion
+efficiently than with a nested encoding, thus reducing the number of recursion
 steps and reducing the chance of an algorithm aborting due to a stack overflow.
